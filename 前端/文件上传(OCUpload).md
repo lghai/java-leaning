@@ -7,7 +7,7 @@
 选中文件后还需在页面点击submit提交按钮，提交表单，才能在后台接收上传的文件并
 进行相关字段解析，上传成功后，页面还要刷新，这样并不符合我们的某些实际需求。
 而ajax又不支持文件上传的功能
->
+
 ### 解决方案
 ```html
 <iframe id="iframefile" style="display:none" ></iframe>

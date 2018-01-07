@@ -27,6 +27,7 @@
 ```
 2.在页面中任意的位置提供一个元素
 `<input id="myButton" type="button" value="上传"/>`
+
 3.调用插件提供的upload方法，动态修改HTML页面元素。
 ```javascript
 <script type="text/javascript">

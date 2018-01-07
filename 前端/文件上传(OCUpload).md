@@ -47,4 +47,4 @@ jQuery(function($) {
 });
 </script>
 ```
-[代码](./index.html)
+[代码](../index.html)

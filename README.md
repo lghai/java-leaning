@@ -1,1 +1,6 @@
 # java-leaning
+```java
+for (; ; ) {
+
+}
+```

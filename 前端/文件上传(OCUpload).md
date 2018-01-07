@@ -29,21 +29,21 @@
 `<input id="myButton" type="button" value="上传"/>`
 
 3.调用插件提供的upload方法，动态修改HTML页面元素。
-```javascript
+```html
 <script type="text/javascript">
 jQuery(function($) {
-    $("#myButton").upload({
-      action: 'xxx',			//你所要向服务器请求的的路径，必填
-      name: 'myFile',			//上传组件的name的值,不写默认是file即<input type='file' name='myFile'/>
-      enctype: 'multipart/form-data',	//mime类型，使用默认就好
-      params: {},			//请求时额外传递的参数，默认是为空的   
-      onSelect: function(self, element) {	//当用户选择了一个文件后触发事件
-        this.autoSubmit = false;		//当选择了文件后，关闭自动提交
-      },
-      onSubmit: function(self, element) {},	//提交表单之前触发事件
-      autoSubmit: true, 		//是否自动提交，即当选择了文件，自动关闭了选择窗口后，是否自动提交请求。
-      onComplete: function(data, self, element) {} //提交表单完成后触发的事件
-    });
+  $("#myButton").upload({
+    action: 'xxx',			//你所要向服务器请求的的路径，必填
+    name: 'myFile',			//上传组件的name的值,不写默认是file即<input type='file' name='myFile'/>
+    enctype: 'multipart/form-data',	//mime类型，使用默认就好
+    params: {},			//请求时额外传递的参数，默认是为空的   
+    onSelect: function(self, element) {	//当用户选择了一个文件后触发事件
+      this.autoSubmit = false;		//当选择了文件后，关闭自动提交
+    },
+    onSubmit: function(self, element) {},	//提交表单之前触发事件
+    autoSubmit: true, 		//是否自动提交，即当选择了文件，自动关闭了选择窗口后，是否自动提交请求。
+    onComplete: function(data, self, element) {} //提交表单完成后触发的事件
   });
+});
 </script>
 ```

@@ -35,7 +35,8 @@ Angular里面的html文件就是view，叫模板（template），当你的数据
   <input type="text" name="name" ng-model="name"/>
 </div>
 <div>
-  <!-- {{}}AngularJS 表达式： 等价于 ng-bind： 视图上用于数据显示 .AngularJS 表达式 很像 JavaScript 表达式：它们可以包含文字、运算符和变量-->
+  <!-- {{}}AngularJS 表达式： 等价于 ng-bind： 视图上用于数据显示 .
+  AngularJS 表达式 很像 JavaScript 表达式：它们可以包含文字、运算符和变量-->
   Hello, {{name}} <br>
   <!--<span ng-bind="name"></span> -->
 </div>
@@ -44,9 +45,153 @@ Angular里面的html文件就是view，叫模板（template），当你的数据
 ![](./image/angular001.png)
 
 *Angular常用属性*
-* `ng-app`:AngularJS的程序入口,对该标签内的袁术进行初始化
+* `ng-app`:AngularJS的程序入口,对该标签内的元素进行初始化
 * `ng-contorller`:在当前元素范围内绑定指定的控制器(controller)
-* `ng-model`:	绑定 HTML 控制器的值到应用数据
+* `ng-model`:	用于绑定应用程序数据到 HTML 控制器(input, select, textarea)的值
 * `ng-repeat`:定义集合中每项数据的模板
-* `{{}}`:花括号表示读取某一属性值
+* `{{}}`:AngularJS 数据绑定表达式,将数据绑定到视图,`{{name}}` 是通过 `ng-model="name"` 进行同步。
 * `filter,orderBy`:过滤器.`filter`可以根据指定的属性过滤数据.`orderBy`是排序过滤器,这两个过滤器都是内置的.过滤器是可以自定义的
+
+## Angular基于模块化
+**需求:** 在后台获取数据,并对页面中的模型和视图进行动态更新
+```html
+<!--
+    ng-app="myapp" 定义了一个模块
+    ng-controller="myctrl" 定义了一个控制器
+-->
+<div ng-app="myapp" ng-controller="myctrl">
+    <div>
+        <!--ng-model:模型作用-->
+        <input type="text" name="name" ng-model="name"/>
+    </div>
+    <div>
+        <!--视图-->
+        Hello,{{name}}
+    </div>
+</div>
+<script>
+    var myapp = angular.module("myapp", []);
+    //$scope是行内注入声明
+    myapp.controller("myctrl", ["$scope", function ($scope) {
+        // 对模型进行初始化赋值,使用$scope的方式将数据遍历到页面上
+        $scope.name = "ketty";//ketty设想是 使用ajax的方式,将数据查询出来
+    }]);
+    // 简单的写法是 不声明直接使用
+    myapp.controller("myctrl", function ($scope) {
+        $scope.name = "ketty";
+    });
+</script>
+```
+
+**Scope(作用域)**  是应用在 HTML (视图) 和 JavaScript (控制器)之间的纽带。<br>
+Scope 是一个对象，有可用的方法和属性。<br>
+Scope 可应用在视图和控制器上。<br>
+
+## AngularJS 事件绑定
+**需求**:设置一个按钮对上面的示例中的模型和视图进行清空
+```html
+<div ng-app="myapp" ng-controller="myctrl">
+    <div>
+        <!--ng-model:模型作用-->
+        <input type="text" name="name" ng-model="name"/><br>
+        <input type="button" value="清空" ng-click="clearVal()">
+    </div>
+    <div>
+        <!--视图-->
+        Hello,{{name}}
+    </div>
+</div>
+<script>
+    var myapp = angular.module("myapp", []);
+    myapp.controller("myctrl", function ($scope) {
+        // 对模型进行初始化赋值,使用$scope的方式将数据遍历到页面上
+        //调用属性
+        $scope.name = "ketty";//ketty设想是 使用ajax的方式,将数据查询出来
+        //调用方法
+        $scope.clearVal = function () {
+            $scope.name='';//模型设置为空
+        }
+    });
+</script>
+```
+上面的清空操作 代码较少,也可以写入行内,例如
+`<input type="button" value="清空2" ng-click="name=''" />`,注意双引号与单引号.
+
+## AngularJS 集合数据遍历
+通过`ng-repeat`可以将数组或对象数据迭代到视图模板中
+```html
+<body ng-app="myapp" ng-controller="myctrl">
+<table width="100%" border="1">
+    <tr>
+        <th>序号</th>
+        <th>商品编号</th>
+        <th>商品名称</th>
+        <th>价格</th>
+    </tr>
+    <!--
+        products：是循环模块名称
+        product：是每次循环的名称，用来获取属性的值
+    -->
+    <tr ng-repeat="product in products | orderBy:'id'"><!--orderBy排序-->
+        <td>{{$index+1}}</td><!-- index为ng-repeat中的索引从0开始 -->
+        <td>{{product.id}}</td>
+        <td>{{product.name}}</td>
+        <td>
+            <div ng-bind="product.price"></div>
+        </td>
+    </tr>
+</table>
+</body>
+<script type="text/javascript">
+    var myapp = angular.module("myapp", []);
+    myapp.controller("myctrl", ["$scope", function ($scope) {
+        $scope.products = [
+            {id: 1001,name: '数码相机',price: 3000},
+            {id: 1002,name: '苹果手机',price: 7000}
+        ];
+    }]);
+</script>
+```
+`ng-repeat`遍历表格的`tr`,同理,也可以遍历`ul`中的`li`例如:
+```html
+<ul><!--names需要用$scope初始化-->
+    <li ng-repeat="x in names">{{x}} {{lastname}}</li>
+</ul>
+```
+
+## AngularJS 路由使用(页面架构布局)
+使用
+
+```html
+<body ng-app="myapp">
+  <h2>图片标题（头）</h2>
+  <ul>
+    <li><a href="#/">首页</a></li>
+    <li><a href="#/product">商品管理</a></li>
+    <li><a href="#/user">用户管理</a></li>
+    <li><a href="#/else">其他</a></li>
+  </ul>
+  <!-- -->
+  <div ng-view></div>
+  <h2>公司版权信息（尾巴）</h2>
+</body>
+<script>
+// 模块化
+var myapp = angular.module("myapp", ['ngRoute']);
+myapp.config(['$routeProvider', function($routeProvider) {
+  $routeProvider
+    .when('/', {
+      templateUrl: './05.route1.html'
+    })
+    .when('/product', {
+      templateUrl: './05.route2.html'
+    })
+    .when('/user', {
+      templateUrl: './05.route3.html'
+    })
+    .otherwise({
+      redirectTo: '/'
+    });
+}]);
+</script>
+```

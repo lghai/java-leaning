@@ -1,6 +1,6 @@
 # java-leaning
 ```java
-for (; ; ) {
-
+for (int i=0; ; ) {
+  
 }
 ```

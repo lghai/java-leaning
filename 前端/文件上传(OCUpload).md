@@ -21,7 +21,7 @@
   而OCUpload就是采用了这种方式，只是进行了封装我们看不到.下面介绍使用步骤
 ### OCUpload使用步骤
 1.导包,OCUpload是基于jQuey的一个插件,所以必须导入jQuery和OCUpload的js包,如下
-```javascript
+```html
 <script src="${pageContext.request.contextPath }/js/jquery-1.8.3.js"></script>
 <script src="${pageContext.request.contextPath }/js/jquery.ocupload-1.1.2.js"></script>
 ```

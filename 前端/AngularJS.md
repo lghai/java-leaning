@@ -163,6 +163,7 @@ Scope 可应用在视图和控制器上。<br>
 使用
 
 ```html
+<!--ng-app程序入口-->
 <body ng-app="myapp">
   <h2>图片标题（头）</h2>
   <ul>
@@ -171,12 +172,12 @@ Scope 可应用在视图和控制器上。<br>
     <li><a href="#/user">用户管理</a></li>
     <li><a href="#/else">其他</a></li>
   </ul>
-  <!-- -->
+  <!-- 规定显示路由的位置 -->
   <div ng-view></div>
   <h2>公司版权信息（尾巴）</h2>
 </body>
 <script>
-// 模块化
+// 模块化 1.2版本之后，需要添加ngRoute，表示路由
 var myapp = angular.module("myapp", ['ngRoute']);
 myapp.config(['$routeProvider', function($routeProvider) {
   $routeProvider
@@ -194,4 +195,15 @@ myapp.config(['$routeProvider', function($routeProvider) {
     });
 }]);
 </script>
+```
+页面中的布局可以使用路由的功能来完成,一般一个网站的头和尾是固定的,路由设置对象参数规则：
+```js
+$routeProvider.when(url,{
+    template:string, //在ng-view中插入简单的html内容
+    templateUrl:string, //在ng-view中插入html模版文件
+    controller:string,function / array, //在当前模版上执行的controller函数
+    controllerAs:string, //为controller指定别名
+    redirectTo:string,function, //重定向的地址
+    resolve:object<key,function> //指定当前controller所依赖的其他模块
+});
 ```

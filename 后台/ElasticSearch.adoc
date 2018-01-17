@@ -11,7 +11,7 @@ ____
 == 快速入门
 === 安装文件
 
-[tree,file=""]
+[tree,file="images/elasticsearch.png"]
 --
 elasticsearch-2.4.0
 |--bin      //存放elasticSearch运行命令

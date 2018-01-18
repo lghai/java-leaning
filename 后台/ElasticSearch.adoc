@@ -36,7 +36,12 @@ http://127.0.0.1:9200[http://127.0.0.1:9200]
 
 image::images/elasticsearch_access.png[title=安装elasticSearch成功,width="400",align="center"]
 
-NOTE: elasticsearch需要安装jdk的版本在1.7.0.72以上，如果使用jdk在1.7.0.52版本会导致
+[NOTE]
+====
+elasticsearch需要安装jdk的版本在1.7.0.72以上，如果使用jdk在1.7.0.52版本会导致
 jdk版本过低，出现启动elasticsearch.bat时闪退现象。
 方法一：在环境变量中添加JAVA_OPTS ：-XX:-UseSuperWord；
 方法二：在ElasticSearch/bin/elasticsearch.in.bat文件中添加一行 set JAVA_OPTS=-XX:-UseSuperWord；
+====
+
+

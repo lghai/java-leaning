@@ -20,13 +20,13 @@ https://www.elastic.co/products/elasticsearch[https://www.elastic.co/products/el
  
 
 
-image::images/elasticsearch_index.png[]
+image::images/elasticsearch_index.png[width="800",align="center"]
  
 
 官网已经更新到6.1的版本.本文档使用2.4.0版本的ElasticSearch,下载后的目录结构如下: 
 
 
-image::images/elasticsearch.png[]
+image::images/elasticsearch.png[width="400",align="center"]
  
 
 运行elasticSearch/bin/elasticsearch.bat 文件,需要JAVA_HOME的环境变量支持.浏览器访问 
@@ -34,10 +34,7 @@ http://127.0.0.1:9200[http://127.0.0.1:9200]
 
 
 
-image::images/elasticsearch_access.png[title=安装elasticSearch成功]
- 
-
-安装elasticSearch成功
+image::images/elasticsearch_access.png[title=安装elasticSearch成功,width="400",align="center"]
 
 [NOTE]
 elasticsearch需要安装jdk的版本在1.7.0.72以上，如果使用jdk在1.7.0.52版本会导致

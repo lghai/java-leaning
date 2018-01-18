@@ -35,33 +35,114 @@ ____
 
 == ElasticSearch 安装配置使用入门
 
-官网: 
+官网:
 https://www.elastic.co/products/elasticsearch[https://www.elastic.co/products/elasticsearch]
- 
+
 
 
 image::images/elasticsearch_index.png[width="800",align="center"]
- 
 
-官网已经更新到6.1的版本.本文档使用2.4.0版本的ElasticSearch,下载后的目录结构如下: 
+
+官网已经更新到6.1的版本.本文档使用2.4.0版本的ElasticSearch,下载后的目录结构如下:
 
 
 image::images/elasticsearch.png[width="400",align="center"]
- 
-
-运行elasticSearch/bin/elasticsearch.bat 文件,需要JAVA_HOME的环境变量支持.浏览器访问 
-http://127.0.0.1:9200[http://127.0.0.1:9200]
 
 
+运行elasticSearch/bin/elasticsearch.bat 文件,需要JAVA_HOME的环境变量支持.浏览器访问
+http://127.0.0.1:9200
 
-image::images/elasticsearch_access.png[title=安装elasticSearch成功,width="400",align="center"]
+
+
+image::images/elasticsearch_access.png[title="安装elasticSearch成功",width="400",align="center"]
+
 
 [NOTE]
 ====
-elasticsearch需要安装jdk的版本在1.7.0.72以上，如果使用jdk在1.7.0.52版本会导致
-jdk版本过低，出现启动elasticsearch.bat时闪退现象。
-方法一：在环境变量中添加JAVA_OPTS ：-XX:-UseSuperWord；
-方法二：在ElasticSearch/bin/elasticsearch.in.bat文件中添加一行 set JAVA_OPTS=-XX:-UseSuperWord；
+- elasticsearch需要安装jdk的版本在1.7.0.72以上，如果使用jdk在1.7.0.52版本会导致jdk版本过低，出现启动elasticsearch.bat时闪退现象。
+* 方法一：在环境变量中添加`JAVA_OPTS ：-XX:-UseSuperWord`
+* 方法二：在ElasticSearch/bin/elasticsearch.in.bat文件中添加一行 `set JAVA_OPTS=-XX:-UseSuperWord`
 ====
 
+== ElasticSearch 插件安装 es head
+
+elasticsearch-head是一个elasticsearch的集群管理工具，它是完全由HTML5编写的独立网页程序，你可以通过插件把它集成到es。或直接下载源码，在本地打开index.html运行它。该工具的Git地址是： https://github.com/Aconex/elasticsearch-head
+
+插件安装方法：
+
+1. 在目录elasticsearch/bin/中运行 `plugin.bat -install Aconex/elasticsearch-head` 或者在 https://github.com/mobz/elasticsearch-head[git] 中下载zip,解压到 `plugins/head`目录下
+2. 运行es
+3. 浏览器中打开 `http://localhost:9200/_plugin/head/`
+
+image::images/elasticsearch_start.png[title="elasticsearch-head安装成功"]
+
+== Elasticsearch入门案例
+
+1.基于maven项目的pom文件导入坐标
+
+[source,xml]
+----
+ <dependencies>
+  	<dependency>
+  		<groupId>org.elasticsearch</groupId>
+  		<artifactId>elasticsearch</artifactId>
+  		<version>2.4.0</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>junit</groupId>
+  		<artifactId>junit</artifactId>
+  		<version>4.12</version>
+  	</dependency>
+  </dependencies>
+----
+2.测试代码
+
+[source,java]
+----
+//ElasticSearch 测试程序 
+public class ElasticsearchTest {
+
+	@Test
+	// 直接在ElasticSearch中建立文档，自动创建索引，自动创建映射
+	public void demo1() throws IOException {
+		// 创建连接搜索服务器对象
+		Client client = TransportClient
+				.builder()
+				.build()
+				.addTransportAddress(
+						new InetSocketTransportAddress(InetAddress
+								.getByName("127.0.0.1"), 9300));//服务器对应9300
+		// 描述json 数据
+		/*
+		 * {id:xxx, title:xxx, content:xxx}
+		 */
+		XContentBuilder builder = XContentFactory.jsonBuilder()
+				.startObject()
+				.field("id", 1)
+				.field("title", "ElasticSearch是一个基于Lucene的搜索服务器")
+				.field("content",
+						"它提供了一个分布式多用户能力的全文搜索引擎，基于RESTful web接口。"
+						+ "Elasticsearch是用Java开发的，并作为Apache许可条款下的开放源码发布，"
+						+ "是当前流行的企业级搜索引擎。设计用于云计算中，能够达到实时搜索，稳定，"
+						+ "可靠，快速，安装使用方便。")
+				.endObject();
+		// 建立文档对象
+		/**
+		 * 参数一blog1：表示索引对象
+		 * 参数二article：类型
+		 * 参数三1：建立id
+		 */
+		IndexResponse indexResponse = client.prepareIndex("blog1", "article", "1").setSource(builder).get();
+		//结果获取
+		String index = indexResponse.getIndex();
+		String type = indexResponse.getType();
+		String id = indexResponse.getId();
+		long version = indexResponse.getVersion();
+		boolean created = indexResponse.isCreated();
+		System.out.println(index + " : " + type + ": " + id + ": " + version + ": " + created);
+
+		// 关闭连接
+		client.close();
+	}
+----
 

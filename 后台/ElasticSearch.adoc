@@ -21,7 +21,7 @@ ifdef::env-github[]
 :warning-caption: :warning:
 endif::[]
 
-== 简介
+=== 简介
 
 
 [quote]
@@ -33,7 +33,7 @@ ElasticSearch是一个基于Lucene的搜索服务器。它提供了一个分布�
 ____
 
 
-== ElasticSearch 安装配置使用入门
+=== ElasticSearch 安装配置使用入门
 
 官网:
 https://www.elastic.co/products/elasticsearch[https://www.elastic.co/products/elasticsearch]
@@ -76,9 +76,9 @@ elasticsearch-head是一个elasticsearch的集群管理工具，它是完全由H
 
 image::images/elasticsearch_start.png[title="elasticsearch-head安装成功"]
 
-== Elasticsearch入门案例
+=== Elasticsearch入门案例-创建
 
-1.基于maven项目的pom文件导入坐标
+===== 基于maven项目的pom文件导入坐标
 
 [source,xml]
 ----
@@ -95,11 +95,23 @@ image::images/elasticsearch_start.png[title="elasticsearch-head安装成功"]
   	</dependency>
   </dependencies>
 ----
-2.测试代码
+
+当直接在ElasticSearch 建立文档对象时，*如果映射不存在的，默认会自动创建*（后续讲手动映射），映射采用默认方式
+
+* ElasticSearch 服务默认端口 *9300*（java代码操作）
+* Web 管理平台端口 9200 （rest风格的uri访问，9200）
+
+Elasticsearch 的 Java 客户端非常强大；它可以建立一个嵌入式实例并在必要时运行管理任务。
+
+运行一个 Java 应用程序和 Elasticsearch 时，有两种操作模式可供使用。该应用程序可在 Elasticsearch 集群中扮演更加主动或更加被动的角色。在更加主动的情况下（称为 Node Client），应用程序实例将从集群接收请求，确定哪个节点应处理该请求，就像正常节点所做的一样。（应用程序甚至可以托管索引和处理请求。）。另一种模式称为 Transport Client，它将所有请求都转发到另一个 Elasticsearch 节点，由后者来确定最终目标。
+
+
+
+===== 测试代码
 
 [source,java]
 ----
-//ElasticSearch 测试程序 
+//ElasticSearch 测试程序
 @Test
 // 直接在ElasticSearch中建立文档，自动创建索引，自动创建映射
 public void demo1() throws IOException {
@@ -130,17 +142,89 @@ public void demo1() throws IOException {
 	 * 参数二article：类型
 	 * 参数三1：建立id
 	 */
-	IndexResponse indexResponse = client.prepareIndex("blog1", "article", "1").setSource(builder).get();
-	//结果获取
-	String index = indexResponse.getIndex();
-	String type = indexResponse.getType();
-	String id = indexResponse.getId();
-	long version = indexResponse.getVersion();
-	boolean created = indexResponse.isCreated();
-	System.out.println(index + " : " + type + ": " + id + ": " + version + ": " + created);
+	// 需要注意的时 创建了请求对象,并不发送请求 需要执行,execute()
+	IndexRequestBuilder requestBuilder = client.prepareIndex("blog1","article","4").setSource(json);
+  // 这里也可以用 get() == execute().actionGet()
+	IndexResponse indexResponse = requestBuilder.execute().actionGet();
 
+  System.out.println("索引："+indexResponse.getIndex());
+	System.out.println("文档类型："+indexResponse.getType());
+	System.out.println("ID："+indexResponse.getId());
+	System.out.println("版本："+indexResponse.getVersion());
 	// 关闭连接
 	client.close();
 }
 ----
+===== 程序运行结果
 
+image::images/blog1.png[title="自动创建索引名称为blog1"]
+image::images/blog1_maping.png[title="自动创建索引映射"]
+image::images/blog1_type.png[title="文档数据 (type 文档类型 )"]
+
+[NOTE]
+====
+代码中的描述json文件也可以使用json字符串和map集合的方式
+
+[source,java]
+----
+String json = "{" +
+    "\"id\":\"2\"," +
+		"\"title\":\"基于Lucene的搜索服务器\"," +
+		"\"content\":\"它提供了一个分布式多用户能力的全文搜索引擎，基于RESTful web接口\"" +
+		"}";
+IndexResponse indexResponse = client.prepareIndex("blog1", "article", "2")
+    .setSource(json)
+     // execute().actionGet == get()
+    .get();
+----
+
+[source,java]
+----
+Map<String, Object> json = new HashMap<String, Object>();
+		json.put("id", "3");
+		json.put("title", "基于Lucene的搜索服务器");
+		json.put("content", "它提供了一个分布式多用户能力的全文搜索引擎，基于RESTful web接口");
+IndexResponse indexResponse = client.prepareIndex("blog1", "article", "3").
+    setSource(json).get();
+
+----
+====
+
+最终结果是
+
+image::images/blog1_1.png[title="数据浏览"]
+
+===== 通过上面的案例,用Elasticsearch与Mysql做个对比,加深记忆.
+Elasticsearch 集群可以包含多个索引（`Index`），每个索引可以包含多个类型（`Type`），每个类型可以包含多个文档（`Document`），每个文档可以包含多个字段（`Field`）。以下是 `MySQL` 和 `Elasticsearch` 的术语类比图，帮助理解：
+
+image::images/elasticsearch_mysql.png[title="Elasticsearch && Mysql"]
+
+[TIP]
+====
+DSL语言,参考 http://www.jianshu.com/p/f437b893502a
+====
+
+===== 小结 ElasticSearch创建索引的大概步骤:
+
+* 连接服务器( `TransportClient` Elasticsearch中的类)
+* 创建索引(需要index,type,id)
+* 添加文档(文档有三种方式来描述)
+* 通过 `get()或者execute()` 方法 发送请求
+
+=== Elasticsearch入门案例-搜索(查询)
+直接上代码,通过id查询,获取指定文档信息;
+
+[source,java]
+----
+@Test
+public void getIndexNoMapping() throws Exception {
+  // 创建Client连接对象
+  Client client = TransportClient.builder().build()
+  		.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("127.0.0.1"),9300));
+  //获取响应
+  GetResponse actionGet = client.prepareGet("blog1", "article", "1").execute().actionGet();
+  
+  System.out.println(actionGet.getSourceAsString());
+  client.close();
+}
+----

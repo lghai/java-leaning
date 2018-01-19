@@ -2,6 +2,7 @@
 = ElasticSearch
 
 // Settings:
+:source-highlighter: rouge
 :experimental:
 :idprefix:
 :idseparator: -
@@ -60,7 +61,7 @@ image::images/elasticsearch_access.png[title="安装elasticSearch成功",width="
 [NOTE]
 ====
 - elasticsearch需要安装jdk的版本在1.7.0.72以上，如果使用jdk在1.7.0.52版本会导致jdk版本过低，出现启动elasticsearch.bat时闪退现象。
-* 方法一：在环境变量中添加`JAVA_OPTS ：-XX:-UseSuperWord`
+* 方法一：在环境变量中添加 `JAVA_OPTS ：-XX:-UseSuperWord`
 * 方法二：在ElasticSearch/bin/elasticsearch.in.bat文件中添加一行 `set JAVA_OPTS=-XX:-UseSuperWord`
 ====
 
@@ -206,13 +207,17 @@ DSL语言,参考 http://www.jianshu.com/p/f437b893502a
 
 ===== 小结 ElasticSearch创建索引的大概步骤:
 
-* 连接服务器( `TransportClient` Elasticsearch中的类)
-* 创建索引(需要index,type,id)
-* 添加文档(文档有三种方式来描述)
-* 通过 `get()或者execute()` 方法 发送请求
+1. 连接服务器( `TransportClient` Elasticsearch中的类)
+2. 创建索引(需要index,type,id)
+3. 添加文档(文档有三种方式来描述)
+4. 通过 `get()或者execute()` 方法 发送请求
+5. 关闭连接
 
-=== Elasticsearch入门案例-搜索(查询)
+=== Elasticsearch入门案例-搜索()
+
+===== 基本查询
 直接上代码,通过id查询,获取指定文档信息;
+
 
 [source,java]
 ----
@@ -223,8 +228,92 @@ public void getIndexNoMapping() throws Exception {
   		.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("127.0.0.1"),9300));
   //获取响应
   GetResponse actionGet = client.prepareGet("blog1", "article", "1").execute().actionGet();
-  
+
   System.out.println(actionGet.getSourceAsString());
   client.close();
 }
 ----
+结果
+
+image::images/elasticsearch1.png[title="通过id查询运行结果"]
+主要步骤跟创建索引时差不多
+
+1. 连接服务器( `TransportClient` `Elasticsearch` 中的类)
+2. 请求方式 `client.prepareGet()`
+3. 通过 `get()或者execute()` 方法 发送请求
+4. `getSourceAsString()` 进行打印输出
+
+===== 复杂查询
+主要依赖QueryBuilder对象 ，可以通过QueryBuilders获取各种查询 ：（基于lucene）
+
+* `matchAllQuery()` 查询所有数据
+* `queryStringQuery()` 指定条件的搜索
+* `termQuery()` 词条查询
+* `wildcardQuery()` 通配符查询
+* `fuzzyQuery()` 相似度查询
+* `boolQuery()` 布尔查询，可以用来组合多个查询条件
+
+*matchAllQuery*
+[source,java]
+----
+@Test
+public void searchDocumeng() throws Exception {
+
+  Client client = TransportClient.builder().build()
+    .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("127.0.0.1"), 9300));
+  // 查询请求构建
+  SearchRequestBuilder builder = client.prepareSearch("blog1").setTypes("article");
+  // 设置查询条件
+  SearchResponse response = builder.setQuery(QueryBuilders.matchAllQuery()).get();
+  // 获取命中次数，查询结果有多少对象
+  SearchHits hits = response.getHits();
+  System.out.println("查询结果:"+	hits.getTotalHits());
+
+  // SearchHits接口继承了Iterator接口
+  for (SearchHit searchHit : hits) {
+
+    Map<String, Object> map = searchHit.getSource();
+    // 根据字段获取title
+    System.out.println("title:"+map.get("title"));
+    // 获取字符串格式打印
+    System.out.println(searchHit.getSourceAsString());
+    System.out.println("--------------------");
+  }
+  // 关闭连接
+  client.close();
+}
+----
+结果
+
+image::images/elasticsearch2.png[title="matchAllQuery运行结果"]
+
+*queryStringQuery* 搜索结果跟 `matchAllQuery` 一致
+[source,java]
+----
+SearchResponse response = builder.setQuery(QueryBuilders.queryStringQuery("全文")).get();
+----
+结果
+
+image::images/elasticsearch2.png[title="queryStringQuery运行结果"]
+
+*wildcardQuery* 模糊查询 *任意字符串 ?任意单个字符
+[source,java]
+----
+// 第一个参数:字段名
+// 第二个参数:查询字符
+SearchResponse response = builder.setQuery(QueryBuilders.wildcardQuery("content", "*全文*")).get();
+----
+结果
+
+image::images/elasticsearch3.png[title="wildcardQuery运行结果"]
+
+*termQuery* 词条查询
+[source,java]
+----
+// 第一个参数:字段名
+// 第二个参数:查询词条
+SearchResponse response = builder.setQuery(QueryBuilders.wildcardQuery("content", "*全文*")).get();
+----
+结果
+
+image::images/elasticsearch3.png[title="termQuery运行结果"]

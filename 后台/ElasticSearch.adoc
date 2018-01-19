@@ -39,24 +39,16 @@ ____
 官网:
 https://www.elastic.co/products/elasticsearch[https://www.elastic.co/products/elasticsearch]
 
-
-
 image::images/elasticsearch_index.png[width="800",align="center"]
-
 
 官网已经更新到6.1的版本.本文档使用2.4.0版本的ElasticSearch,下载后的目录结构如下:
 
-
 image::images/elasticsearch.png[width="400",align="center"]
-
 
 运行elasticSearch/bin/elasticsearch.bat 文件,需要JAVA_HOME的环境变量支持.浏览器访问
 http://127.0.0.1:9200
 
-
-
 image::images/elasticsearch_access.png[title="安装elasticSearch成功",width="400",align="center"]
-
 
 [NOTE]
 ====
@@ -75,7 +67,7 @@ elasticsearch-head是一个elasticsearch的集群管理工具，它是完全由H
 2. 运行es
 3. 浏览器中打开 `http://localhost:9200/_plugin/head/`
 
-image::images/elasticsearch_start.png[title="elasticsearch-head安装成功"]
+image::images/elasticsearch_start.png[title="elasticsearch-head安装成功",align="center"]
 
 === Elasticsearch入门案例-创建
 
@@ -105,8 +97,6 @@ image::images/elasticsearch_start.png[title="elasticsearch-head安装成功"]
 Elasticsearch 的 Java 客户端非常强大；它可以建立一个嵌入式实例并在必要时运行管理任务。
 
 运行一个 Java 应用程序和 Elasticsearch 时，有两种操作模式可供使用。该应用程序可在 Elasticsearch 集群中扮演更加主动或更加被动的角色。在更加主动的情况下（称为 Node Client），应用程序实例将从集群接收请求，确定哪个节点应处理该请求，就像正常节点所做的一样。（应用程序甚至可以托管索引和处理请求。）。另一种模式称为 Transport Client，它将所有请求都转发到另一个 Elasticsearch 节点，由后者来确定最终目标。
-
-
 
 ===== 测试代码
 
@@ -158,9 +148,9 @@ public void demo1() throws IOException {
 ----
 ===== 程序运行结果
 
-image::images/blog1.png[title="自动创建索引名称为blog1"]
-image::images/blog1_maping.png[title="自动创建索引映射"]
-image::images/blog1_type.png[title="文档数据 (type 文档类型 )"]
+image::images/blog1.png[title="自动创建索引名称为blog1",align="center"]
+image::images/blog1_maping.png[title="自动创建索引映射",align="center"]
+image::images/blog1_type.png[title="文档数据 (type 文档类型 )",align="center"]
 
 [NOTE]
 ====
@@ -193,12 +183,12 @@ IndexResponse indexResponse = client.prepareIndex("blog1", "article", "3").
 
 最终结果是
 
-image::images/blog1_1.png[title="数据浏览"]
+image::images/blog1_1.png[title="数据浏览",align="center"]
 
-===== 通过上面的案例,用Elasticsearch与Mysql做个对比,加深记忆.
+===== 通过上面的案例,用Elasticsearch&&Mysql做个对比,加深记忆.
 Elasticsearch 集群可以包含多个索引（`Index`），每个索引可以包含多个类型（`Type`），每个类型可以包含多个文档（`Document`），每个文档可以包含多个字段（`Field`）。以下是 `MySQL` 和 `Elasticsearch` 的术语类比图，帮助理解：
 
-image::images/elasticsearch_mysql.png[title="Elasticsearch && Mysql"]
+image::images/elasticsearch_mysql.png[title="Elasticsearch && Mysql",align="center"]
 
 [TIP]
 ====
@@ -235,7 +225,7 @@ public void getIndexNoMapping() throws Exception {
 ----
 结果
 
-image::images/elasticsearch1.png[title="通过id查询运行结果"]
+image::images/elasticsearch1.png[title="通过id查询运行结果",align="center"]
 主要步骤跟创建索引时差不多
 
 1. 连接服务器( `TransportClient` `Elasticsearch` 中的类)
@@ -285,7 +275,7 @@ public void searchDocumeng() throws Exception {
 ----
 结果
 
-image::images/elasticsearch2.png[title="matchAllQuery运行结果"]
+image::images/elasticsearch2.png[title="matchAllQuery运行结果",align="center"]
 
 *queryStringQuery* 搜索结果跟 `matchAllQuery` 一致
 [source,java]
@@ -294,7 +284,7 @@ SearchResponse response = builder.setQuery(QueryBuilders.queryStringQuery("全�
 ----
 结果
 
-image::images/elasticsearch2.png[title="queryStringQuery运行结果"]
+image::images/elasticsearch2.png[title="queryStringQuery运行结果",align="center"]
 
 *wildcardQuery* 模糊查询 *任意字符串 ?任意单个字符
 [source,java]
@@ -305,7 +295,7 @@ SearchResponse response = builder.setQuery(QueryBuilders.wildcardQuery("content"
 ----
 结果
 
-image::images/elasticsearch3.png[title="wildcardQuery运行结果"]
+image::images/elasticsearch3.png[title="wildcardQuery运行结果",align="center"]
 
 *termQuery* 词条查询
 [source,java]
@@ -316,12 +306,12 @@ SearchResponse response = builder.setQuery(QueryBuilders.wildcardQuery("content"
 ----
 结果
 
-image::images/elasticsearch3.png[title="termQuery运行结果"]
+image::images/elasticsearch3.png[title="termQuery运行结果",align="center"]
 [TIP]
 ====
 模糊查询和词条查询不到,说明没有 *全文* 这个词条,这是为什么呢？原因是ElasticSearch 默认采用分词器,单个字分词,没有"全文"这个词条,而在 `queryStringquery()` 方法中也是先将 `全文` 分为单字然后在查询
 
-image::images/elasticsearch4.png[]
+image::images/elasticsearch4.png[align="center"]
 ====
 
 === IK分词器和ElasticSearch集成使用
@@ -336,4 +326,41 @@ ElasticSearch 默认采用分词器， 单个字分词 ，效果很差,所以采
 4. 配置elasticsearch.yml 在 `elasticsearch-2.4.0\config` 中,在文件的最后加入 `index.analysis.analyzer.ik.type: "ik"` 需要注意的是, `:` 后面需要一个空格
 5. 重启es 测试,例如 在浏览器中输入 http://localhost:9200/_analyze?analyzer=ik&pretty=true&text=我是中国人 成功显示,如下图
 
-image::images\elasticSearch5.png[]
+image::ElasticSearch\ElasticSearch-b3a4c.png[title="成功图示",align="center"]
+
+[TIP]
+====
+ik 的扩展词库 `config/custom/mydict.dic` 用来添加ik不分词的词条,例如:传智播客等等,一些公司的名字
+
+ik 的停用词库 `config/custom/ext_stopword.dic` 停用一些声词,感叹词
+
+修改了词库,重启才能生效
+====
+
+=== ElasticSearch 常用编程操作
+===== 创建索引(等同于mysql的库)
+[source,java]
+----
+@Test
+public void createIndex() throws Exception {
+  // 建立连接
+  TransportClient client = TransportClient.builder().build()
+      .addTransportAddress(new InetSocketTransportAddress(
+          InetAddress.getByName("127.0.0.1"),9300));
+  // 创建索引 ,执行
+  client.admin().indices().prepareCreate("blog2").get();
+  //关闭连接
+  client.close();
+}
+----
+image::ElasticSearch\ElasticSearch-895e9.png[align="center",title="默认创建好索引，mappings为空"]
+
+===== 删除索引
+[source,java]
+----
+  // 删除索引,执行
+client.admin().indices().prepareDelete("blog2").get();
+}
+----
+
+===== 创建映射

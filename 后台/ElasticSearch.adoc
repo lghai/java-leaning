@@ -98,7 +98,7 @@ Elasticsearch 的 Java 客户端非常强大；它可以建立一个嵌入式实
 
 运行一个 Java 应用程序和 Elasticsearch 时，有两种操作模式可供使用。该应用程序可在 Elasticsearch 集群中扮演更加主动或更加被动的角色。在更加主动的情况下（称为 Node Client），应用程序实例将从集群接收请求，确定哪个节点应处理该请求，就像正常节点所做的一样。（应用程序甚至可以托管索引和处理请求。）。另一种模式称为 Transport Client，它将所有请求都转发到另一个 Elasticsearch 节点，由后者来确定最终目标。
 
-===== 测试代码
+===== 测试代码[[ref_1]]
 
 [source,java]
 ----
@@ -364,3 +364,58 @@ client.admin().indices().prepareDelete("blog2").get();
 ----
 
 ===== 创建映射
+[source,java]
+----
+@Test
+	public void createMapping() throws Exception {
+		TransportClient client = TransportClient.builder().build()
+				.addTransportAddress(new InetSocketTransportAddress(
+						InetAddress.getByName("127.0.0.1"),9300));
+		// 创建索引
+		client.admin().indices().prepareCreate("blog2").get();
+		// 添加映射
+		XContentBuilder builder = XContentFactory.jsonBuilder()
+			.startObject()
+				.startObject("article")
+					.startObject("properties")
+						.startObject("id")
+							.field("type","integer").field("store","yes")
+						.endObject()
+						.startObject("title")
+							.field("type", "string").field("store", "yes").field("analyzer", "ik")
+						.endObject()
+						.startObject("content")
+							.field("type", "string").field("store", "yes").field("analyzer", "ik")
+						.endObject()
+					.endObject()
+				.endObject()
+			.endObject();
+		// 创建映射 请求
+		PutMappingRequest mappingRequest = Requests.putMappingRequest("blog2").type("article").source(builder);
+		// 执行
+		client.admin().indices().putMapping(mappingRequest).get();
+
+		client.close();
+	}
+}
+----
+image::ElasticSearch\ElasticSearch-a3210.png[title="执行结果",align="center"]
+[TIP]
+====
+mapping映射的格式为
+[source,json]
+----
+"mappings" : {
+  "article" : {
+  	"dynamic" : "false",
+  	"properties" : {
+  		"id" : { "type" : "integer" },
+  		"title" : { "type" : "string" },
+  		"content" : { "type" : "string" }
+  	}
+  }
+}
+----
+====
+
+<<ref_1,入门案例>>

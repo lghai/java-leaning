@@ -417,5 +417,15 @@ mapping映射的格式为
 }
 ----
 ====
-
-<<ref_1,入门案例>>
+===== 文档相关操作 （CRUD）
+回顾：直接在XContentBuilder中构建json数据，建立文档的 <<ref_1,入门案例>>
+针对XContentFactory对象创建文档，有些复杂，是否可以使用对象的形式创建呢？
+比如:Article这个类将content内容进行封装
+[source,java]
+----
+public class Article {
+  private Integer id;
+  private String title;
+  private String content;
+}
+----

@@ -317,3 +317,23 @@ SearchResponse response = builder.setQuery(QueryBuilders.wildcardQuery("content"
 结果
 
 image::images/elasticsearch3.png[title="termQuery运行结果"]
+[TIP]
+====
+模糊查询和词条查询不到,说明没有 *全文* 这个词条,这是为什么呢？原因是ElasticSearch 默认采用分词器,单个字分词,没有"全文"这个词条,而在 `queryStringquery()` 方法中也是先将 `全文` 分为单字然后在查询
+
+image::images/elasticsearch4.png[]
+====
+
+=== IK分词器和ElasticSearch集成使用
+
+ElasticSearch 默认采用分词器， 单个字分词 ，效果很差,所以采用 `IK Analyzer` 分词器,开源项目地址 https://github.com/medcl/elasticsearch-analysis-ik/tree/2.x
+
+步骤:
+
+1. 下载开源项目(文档采用1.10.0版本)
+2. 进入项目文件 `mvn clean package`
+3. 目录中 `target\releases` 下的 `elasticsearch-analysis-ik-1.10.0.zip` 解压到 `elasticsearch-2.4.0\plugins\analysis-ik` 目录下
+4. 配置elasticsearch.yml 在 `elasticsearch-2.4.0\config` 中,在文件的最后加入 `index.analysis.analyzer.ik.type: "ik"` 需要注意的是, `:` 后面需要一个空格
+5. 重启es 测试,例如 在浏览器中输入 http://localhost:9200/_analyze?analyzer=ik&pretty=true&text=我是中国人 成功显示,如下图
+
+image::images\elasticSearch5.png[]

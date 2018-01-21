@@ -225,6 +225,7 @@ public void getIndexNoMapping() throws Exception {
 结果
 
 image::images/elasticsearch1.png[title="通过id查询运行结果",align="center"]
+
 主要步骤跟创建索引时差不多
 
 1. 连接服务器( `TransportClient` `Elasticsearch` 中的类)
@@ -263,7 +264,7 @@ public void searchDocumeng() throws Exception {
 
     Map<String, Object> map = searchHit.getSource();
     // 根据字段获取title
-    System.out.println("title:"+map.get("title"));
+    System.out.println(":"+map.get("title"));
     // 获取字符串格式打印
     System.out.println(searchHit.getSourceAsString());
     System.out.println("--------------------");
@@ -399,6 +400,7 @@ client.admin().indices().prepareDelete("blog2").get();
 }
 ----
 image::ElasticSearch\ElasticSearch-a3210.png[title="执行结果",align="center"]
+
 [TIP]
 ====
 mapping映射的格式为

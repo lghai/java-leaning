@@ -11,6 +11,163 @@ ifdef::env-github[]
 :tip-caption: :bulb:
 :warning-caption: :warning:
 endif::[]
-===
 
-NOTE: sfdf
+=== 简介
+[quote,百度百科]
+____
+Apache Shiro是一个强大且易用的Java安全框架,执行身份验证、授权、密码学和会话管理。使用Shiro的易于理解的API,您可以快速、轻松地获得任何应用程序,从最小的移动应用程序到最大的网络和企业应用程序。
+
+*主要功能*
+
+三个核心组件：Subject, SecurityManager 和 Realms.
+
+Subject：即“当前操作用户”。但是，在Shiro中，Subject这一概念并不仅仅指人，也可以是第三方进程、后台帐户（Daemon Account）或其他类似事物。它仅仅意味着“当前跟软件交互的东西”。但考虑到大多数目的和用途，你可以把它认为是Shiro的“用户”概念。
+
+Subject代表了当前用户的安全操作，SecurityManager则管理所有用户的安全操作。
+
+SecurityManager：它是Shiro框架的核心，典型的Facade模式，Shiro通过SecurityManager来管理内部组件实例，并通过它来提供安全管理的各种服务。
+
+Realm： Realm充当了Shiro与应用安全数据间的“桥梁”或者“连接器”。也就是说，当对用户执行认证（登录）和授权（访问控制）验证时，Shiro会从应用配置的Realm中查找用户及其权限信息。
+
+从这个意义上讲，Realm实质上是一个安全相关的DAO：它封装了数据源的连接细节，并在需要时将相关数据提供给Shiro。当配置Shiro时，你必须至少指定一个Realm，用于认证和（或）授权。配置多个Realm是可以的，但是至少需要一个。
+
+Shiro内置了可以连接大量安全数据源（又名目录）的Realm，如LDAP、关系数据库（JDBC）、类似INI的文本配置资源以及属性文件等。如果缺省的Realm不能满足需求，你还可以插入代表自定义数据源的自己的Realm实现。
+____
+
+===== Apache Shiro 体系结构
+
+1. Authentication： 认证 ---- 用户登录，身份识别  who are you?
+2. Authorization： 授权 --- 用户具有哪些权限、角色  what can you do ?
+3. Cryptography： 安全数据加密
+4. Session Management： 会话管理
+5. Web Integration：web系统集成
+6. Integrations：   集成其它应用，可以集成spring、缓存框架
+
+image::ApacheShiro\ApacheShiro-3a157.png[align=center,title="Apache_Shiro_reference(中文版).pdf"]
+
+===== Shiro运行主要运行流程
+image::ApacheShiro\ApacheShiro-0d7a5.png[align=center,title="运行流程"]
+ApplicationCode： 用户编写代码
+
+Subject： 就是shiro管理的用户
+
+SecurityManager： 安全管理器，是shiro权限控制核心对象， 在编程时，只需要操作Subject方法， 底层调用SecurityManager方法，我们无需直接编程操作SecurityManager
+
+Realm： 应用程序和安全数据之间连接器 ，应用程序 进行权限控制读取安全数据（数据表、文件、网路 … ），通过Realm对象完成 。
+
+而且Shiro提供了一些常用的 Realms来连接数据源，如LDAP数据源的JndiLdapRealm，JDBC数据源的JdbcRealm，ini文件数据源的IniRealm，properties文件数据源的PropertiesRealm，等等。我们也可以插入自己的 Realm实现来代表自定义的数据源。 像其他组件一样，Realms也是由SecurityManager控制
+
+TIP: 登录流程： 应用程序 --- >Subject ---> SecurityManager ---> Realm（判断用户是否合法） ---> 安全数据
+
+===== Shiro进行权限控制 （开发场景）
+
+四种主要方式 ：
+
+1. 在程序中，通过Subject 编程方式进行权限控制，完成登录认证
+2. 配置Filter，实现URL级别粗粒度权限控制
+3. 配置代理，基于注解实现细粒度权限控制
+4. 在页面中使用 shiro自定义标签实现 页面显示权限控制
+
+=== 入门案例
+
+1.配置 `web.xml` 中的shiro过滤器,是Spring提供的代理过滤器
+
+[source,xml]
+----
+<!-- 配置shiro的过滤器 -->
+<filter>
+	<filter-name>shiroFilter</filter-name>
+	<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+</filter>
+<filter-mapping>
+	<filter-name>shiroFilter</filter-name>
+	<url-pattern>/*</url-pattern>
+</filter-mapping>
+----
+2.配置 `applicationContext-shiro.xml` `shiroFilter` 为真正的过滤器[[ref_1]]
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="
+  http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+  <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+    <!-- 安全管理器 -->
+    <property name="securityManager" ref="securityManager" />
+    <!-- 未认证，跳转到的页面 -->
+    <property name="loginUrl" value="/login.html" />
+    <!-- 认证后，跳转到的页面，登录成功的页面 -->
+    <property name="successUrl" value="/index.html" />
+    <!-- 认证后，没有权限跳转到的页面 -->
+    <property name="unauthorizedUrl" value="/unauthorized.html" />
+    <!-- shiro，URL控制过滤器规则 -->
+    <property name="filterChainDefinitions">
+      <value>
+      /login.html* = anon
+      /css/** = anon
+      /js/** = anon
+      /images/** =
+      anon
+      /services/** = anon
+      /** = authc
+      </value>
+    </property>
+  </bean>
+
+  <!-- 配置安全管理器 -->
+  <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager"></bean>
+
+  <!-- 对安全管理器 增强代码 ， spring 后处理器 -->
+  <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor" />
+</beans>
+----
+[NOTE]
+====
+1.anno表示匿名过滤器，即未登录就可以访问：例如login.html页面、css文件夹下的文件、js文件夹下的文件、images文件夹下的文件、services文件夹下的文件。
+----
+/login.html* = anon
+/css/** = anon
+/js/** = anon
+/images/** = anon
+/services/** = anon  ：表示webservice在web.xml中的配置，表示访问services的url需要匿名放权。
+----
+2.authc表示认证过滤器，即必须登录才能访问，例如登录页面login.html除外，其他页面访问都需要先认证登录，才能访问。
+----
+* /** = authc
+----
+----
+开启Filter Chain 过滤器 ，它会激活10个Filter ！
+anon: 匿名过滤器，未登陆也可以访问
+authc: 认证过滤器， 登陆后访问
+perms : 需要xx权限，才能访问
+roles: 需要xx角色，才能访问
+user: 需要xx用户登录，并记住我，才能访问
+port:指定端口才能访问
+ssl:必须使用https协议才能访问
+logout :登出功能
+rest :根据指定HTTP请求访问才能访问 ，get方式提交 或者 post方式提交才能访问
+----
+====
+image::ApacheShiro\ApacheShiro-bd1cd.png[align=center,title=过滤器]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+=== bug
+===== bug1_No bean named 'shiroFilter' is defined
+image::ApacheShiro\ApacheShiro-33016.png[align=center,title="服务器启动时"]
+shiro的过滤器 `DelegatingFilterProxy` 为代理过滤器 ，这个类初始化后，会去spring 配置文件中找寻一个同名的 Bean （才是真正的Filter ）
+去spring容器中找 `<bean id="shiroFilter" >` 的对象,所以必须初始化 <<ref_1,shiroFilter>>

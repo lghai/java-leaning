@@ -20,35 +20,6 @@ ifdef::env-github[]
 :tip-caption: :bulb:
 :warning-caption: :warning:
 endif::[]
-// Aliases:
-:project-name: Asciidoctor PDF
-:project-handle: asciidoctor-pdf
-// URIs:
-:uri-asciidoctor: http://asciidoctor.org
-:uri-gem: http://rubygems.org/gems/asciidoctor-pdf
-:uri-project: https://github.com/asciidoctor/asciidoctor-pdf
-:uri-project-repo: {uri-project}
-:uri-project-issues: {uri-project-repo}/issues
-:uri-project-list: http://discuss.asciidoctor.org
-:uri-prawn: http://prawn.majesticseacreature.com
-:uri-prawn-gmagick: https://github.com/packetmonkey/prawn-gmagick
-:uri-prawn-svg: https://github.com/mogest/prawn-svg
-:uri-asciidoctor-mathematical: https://github.com/asciidoctor/asciidoctor-mathematical
-:uri-rvm: http://rvm.io
-:uri-graphicsmagick: http://www.graphicsmagick.org
-
-ifdef::status[]
-image:https://img.shields.io/gem/v/asciidoctor-pdf.svg[Latest Release, link={uri-gem}]
-image:https://img.shields.io/badge/license-MIT-blue.svg[MIT License, link=#copyright]
-endif::[]
-
-ifdef::env-site[]
-Asciidoctor PDF is a native PDF converter for AsciiDoc.
-It bypasses the requirement to generate an interim format such as DocBook, Apache FO, or LaTeX.
-Instead, you can use it to convert directly from AsciiDoc to PDF.
-Its aim is to take the pain out of creating PDF documents from AsciiDoc.
-endif::[]
-ifndef::env-site[]
 
 === 简介
 
@@ -502,12 +473,12 @@ http://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.1
 <dependency>
 	<groupId>com.fasterxml.jackson.core</groupId>
 	<artifactId>jackson-core</artifactId>
-	<version>2.8.1</version>  <1>
+	<version>2.8.1</version>
 </dependency>
 <dependency>
 	<groupId>com.fasterxml.jackson.core</groupId>
 	<artifactId>jackson-databind</artifactId>
-	<version>2.8.1</version> <2>
+	<version>2.8.1</version>
 </dependency>
 <dependency>
 	<groupId>com.fasterxml.jackson.core</groupId>

@@ -1,0 +1,118 @@
+
+= 汇总下digitalocean VPS的注册购买管理步骤：
+
+// Settings:
+:source-highlighter: prettify
+:experimental:
+:idprefix:
+:idseparator: -
+ifndef::env-github[:icons: font]
+ifdef::env-github,env-browser[]
+:toc: macro
+:toclevels: 1
+endif::[]
+ifdef::env-github[]
+:status:
+:outfilesuffix: .adoc
+:!toc-title:
+:caution-caption: :fire:
+:important-caption: :exclamation:
+:note-caption: :paperclip:
+:tip-caption: :bulb:
+:warning-caption: :warning:
+endif::[]
+
+1. 注册账号；
+1. 验证邮箱；
+1. 付款方式验证；
+1. 创建VPS主机。
+1. vps主机管理
+1. 设置界面介绍
+
+=== 注册账号
+
+点击此link:https://m.do.co/c/ae75e106a47d[推荐链接注册] ，可以获得10美元优惠！如果您充值25美元，我也会得到25美元哟！
+
+image::Droplet\Droplet-64cf2.png[]
+
+=== 邮箱验证
+注册成功后会给你的注册邮箱发送验证邮件，打开邮箱点击验证网址进行验证。
+
+=== 支付方式验证
+邮箱验证成功后，自动登录到digitalocean设置里的“Billing”页面，验证您的付款方法，验证有两种方式，一是绑定信用卡，二是通过paypal向账户充值5美元。个人建议不要绑定信用卡，通过PayPal付款。因为通过paypal充值的方法验证账户的好处是如果有纠纷可以通过paypal纠纷申请退款，并且paypal资金安全性要好于信用卡绑定。绑定信用卡具体如下图：
+
+image::Droplet\Droplet-12e2d.png[]
+paypal付款操作流程如图：
+
+image::Droplet\Droplet-aba7a.png[]
+有优惠码的可以输入优惠码。
+
+image::Droplet\Droplet-24df3.png[]
+付款完成后，进入billing页，查看一下余额！
+
+image::Droplet\Droplet-20fb4.png[]
+好了，现在可以创建主机了！点击右上角的create Droplet创建主机。
+
+image::Droplet\Droplet-50655.png[]
+现在进入创建页面了，第一步：选择主机镜像，我一直用的是Debian7 64位的。
+
+image::Droplet\Droplet-b6daa.png[]
+第二步：选择套餐，根据自己需求选择不同的套餐，如果仅仅用来翻墙，选那个5美元的套餐就行了！
+
+image::Droplet\Droplet-5bc3f.png[]
+第三步：选择数据中心，就是选择主机所在机房，这些个机房，博主也是一个一个都选过，个人认为北美的几个机房速度都还可以，国内电信用户建议选择美国西海岸的San Francisco！
+
+image::Droplet\Droplet-89719.png[]
+附加选项和增加ssh key这两步骤可以跳过，个人感觉没啥用！
+
+image::Droplet\Droplet-7cf62.png[]
+第四步，填一下主机名和要部署几台相同配置的主机，然后点击create就完成创建了。
+
+image::Droplet\Droplet-36c61.png[]
+
+好，主机创建完成，点击创建好的主机进入控制页面！
+
+image::Droplet\Droplet-36c61.png[]
+如果主机没开机，点右边的按钮开机！
+
+控制界面左边有一排按钮。
+
+第一个是图表，详细显示了cpu、网络流量、磁盘的运行情况！
+
+image::Droplet\Droplet-5141f.png[]
+
+这里可以SSH登录控制台管理，也可以重设超级管理员root的密码。
+
+image::Droplet\Droplet-4f41e.png[]
+这里可以关闭vps，也可以重启vps，当然，即使关机了，计费还是会继续的，只有你删除vps主机才停止计费，删除功能请查看Destroy【删除】。
+
+image::Droplet\Droplet-96a49.png[]
+网络信息
+
+image::Droplet\Droplet-7a274.png[]
+备份数据，每周系统会自动备份你主机的数据，但要收费！
+
+image::Droplet\Droplet-5f3c6.png[]
+快照！
+
+image::Droplet\Droplet-723c2.png[]
+更换系统内核。
+
+image::Droplet\Droplet-0868d.png[]
+注销主机。停机是会继续扣钱的，只有删除主机才不会继续扣你钱！
+
+image::Droplet\Droplet-17e85.png[]
+其他的不介绍了！
+
+创建好主机后，我们再下个putty来远程控制主机，其实用digitalocean的控制台也可以，但很麻烦！
+
+link:https://www.putty.org/[putty下载]
+
+image::Droplet\Droplet-6572f.png[]
+DigitalOcean则是把密码发到了你邮箱里，而且DigitalOcean在首次登陆VPS的时候系统会提示你修改，你再输入一次原密码后连续输入两次新密码就OK了，DigitalOcean默认SSH端口为22，用户名是root。
+
+image::Droplet\Droplet-943b7.png[]
+
+
+===== 来源： 作者：Patordia ,著作权归作者所有。
+===== 链接： https://www.jianshu.com/p/741d1de2d9a1

@@ -1,0 +1,86 @@
+= 基于centos 搭建VPN(shadowsocks+serverspeeder)
+
+// Settings:
+:source-highlighter: prettify
+:experimental:
+:idprefix:
+:idseparator: -
+ifndef::env-github[:icons: font]
+ifdef::env-github,env-browser[]
+:toc: macro
+:toclevels: 1
+endif::[]
+ifdef::env-github[]
+:status:
+:outfilesuffix: .adoc
+:!toc-title:
+:caution-caption: :fire:
+:important-caption: :exclamation:
+:note-caption: :paperclip:
+:tip-caption: :bulb:
+:warning-caption: :warning:
+endif::[]
+
+=== shadowsocks
+操作系统：CentOS6
+安装shadowsocks服务端( link:https://github.com/shadowsocks/shadowsocks/wiki/Shadowsocks-%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E[参考官方Shadowsocks] )
+
+===== 给服务器安装SS SERVER
+----
+yum -y install wget
+wget --no-check-certificate https://raw.githubusercontent.com/teddysun/shadowsocks_install/master/shadowsocks.sh
+chmod +x shadowsocks.sh
+./shadowsocks.sh 2>&1 | tee shadowsocks.log
+----
+image::搭建vpn服务器\搭建vpn服务器-98ddf.png[]
+提示你输入你的SS SERVER的密码和端口。建议你自己输入一个密码和端口(端口范围1-65536，推荐10000以上),如果不输入,系统会启用默认密码端口。然后按任意键继续
+
+image::搭建vpn服务器\搭建vpn服务器-5b814.png[]
+看到以上提示后就表明VPS上SS已经安装成功，并且已经设置了开机启动，VPS重启后不用手工启动SS
+
+===== 配置防火墙
+如果服务器开了防火墙,则需要配置防火墙
+
+
+===== centos 6 更换系统内核kernel为2.6.32-504.el6.i686
+首先需要确认自己的内核版本，输入命令uname -a
+输出中有i686则为32位，有x86_64则为64位。
+
+centos 6更换系统内核kernel为2.6.32-504.el6.i686的方法 以便支持锐速TCP加速软件
+
+----
+wget http://github.itzmx.com/1265578519/kernel/master/6.5/kernel-2.6.32-504.el6.x86_64.rpm -O kernel-2.6.32-504.el6.x86_64.rpm
+rpm -ivh kernel-2.6.32-504.el6.x86_64.rpm --force
+重启
+reboot
+----
+
+备用下载服务器
+----
+wget http://ftp.scientificlinux.org/linux/scientific/6.5/x86_64/updates/security/kernel-2.6.32-504.el6.x86_64.rpm
+rpm -ivh kernel-2.6.32-504.el6.x86_64.rpm --force
+----
+centos 7.1的
+----
+http://ftp.scientificlinux.org/linux/scientific/7.1/x86_64/updates/security/kernel-3.10.0-229.1.2.el7.x86_64.rpm
+----
+
+===== 锐速破解版安装方法
+
+大概2月份的时候锐速宣布不再免费，原来宣传的永久免费20M也没了。一时间让广大vps爱好者陷入低谷，不过各路破解高手也是不断抛砖引玉，从开始的改MAC方法到后来的算lic方法，现在连一键安装包都出来了，算是比较成熟了吧。这里转载一个用的比较多的一键安装包，亲测可用，由91yun.org博主带来的。
+
+脚本已托管在Github： https://github.com/91yun/serverspeeder
+
+锐速破解版安装方法
+----
+wget -N --no-check-certificate https://github.com/91yun/serverspeeder/raw/master/serverspeeder.sh && bash serverspeeder.sh
+----
+
+锐速破解版卸载方法：
+----
+chattr -i /serverspeeder/etc/apx* && /serverspeeder/bin/serverSpeeder.sh uninstall -f
+----
+查看锐速启动状态
+----
+/serverspeeder/bin/serverSpeeder.sh status
+----

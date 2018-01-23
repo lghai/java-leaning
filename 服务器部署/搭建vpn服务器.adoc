@@ -38,6 +38,45 @@ image::搭建vpn服务器\搭建vpn服务器-98ddf.png[]
 image::搭建vpn服务器\搭建vpn服务器-5b814.png[]
 看到以上提示后就表明VPS上SS已经安装成功，并且已经设置了开机启动，VPS重启后不用手工启动SS
 
+===== 编写配置（参考 link:https://github.com/shadowsocks/shadowsocks/wiki/Configuration-via-Config-File[Configuration] ）：
+
+vi编辑配置
+----
+vi /etc/shadowsocks.json
+----
+内容如下
+
+----
+{
+    "server":"0.0.0.0",
+    "server_port":8388,
+    "local_address": "127.0.0.1",
+    "local_port":1080,
+    "password":"mypassword",
+    "timeout":300,
+    "method":"aes-256-cfb",
+    "fast_open": false
+}
+----
+或（多个SS账号）
+----
+{
+    "server":"0.0.0.0",
+    "port_password":{
+     "8381":"xxxxxxx",
+     "8382":"xxxxxxx",
+     "8383":"xxxxxxx",
+     "8384":"xxxxxxx"
+     },
+    "timeout":300,
+    "method":"aes-256-cfb",
+    "fast_open": false
+}  
+----
+
+
+
+
 ===== 配置防火墙
 如果服务器开了防火墙,则需要配置防火墙
 

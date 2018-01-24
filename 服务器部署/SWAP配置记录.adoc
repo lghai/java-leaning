@@ -21,7 +21,7 @@ Linux 中的 SWAP（交换分区），类似于 Windows 的虚拟内存。系统
   dd if=/dev/zero of=/mnt/swap bs=block_size count=number_of_block
 ----
 [[ref_1]]
-.配置
+[NOTE]
 ====
 block_size、number_of_block 大小可以自定义,比如 bs=1M count=1024 代表设置 1G 大小 SWAP 分区。
 

@@ -50,10 +50,19 @@ image::搭建vpn服务器\搭建vpn服务器-5b814.png[]
 
 ===== 编写配置（参考 link:https://github.com/shadowsocks/shadowsocks/wiki/Configuration-via-Config-File[Configuration] ）：
 
-vi编辑配置
+====== vi编辑配置
 ----
 vi /etc/shadowsocks.json
 ----
+====== 前台运行
+
+  ssserver -c /etc/shadowsocks.json
+
+====== 后台运行
+
+  ssserver -c /etc/shadowsocks.json -d start
+  ssserver -c /etc/shadowsocks.json -d stop
+
 内容如下
 
 ----

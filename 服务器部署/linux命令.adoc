@@ -1,0 +1,41 @@
+= linux 命令小计
+// Settings:
+:source-highlighter: prettify
+:experimental:
+:idprefix:
+:idseparator: -
+ifndef::env-github[:icons: font]
+ifdef::env-github,env-browser[]
+:toc: macro
+:toclevels: 1
+endif::[]
+ifdef::env-github[]
+:status:
+:outfilesuffix: .adoc
+:!toc-title:
+:caution-caption: :fire:
+:important-caption: :exclamation:
+:note-caption: :paperclip:
+:tip-caption: :bulb:
+:warning-caption: :warning:
+endif::[]
+
+=== find 命令
+===== find命令的常用选项及实例
+====== -name 按照文件名查找文件。
+----
+find /dir -name filename  在/dir目录及其子目录下面查找名字为filename的文件
+find . -name "*.c" 在当前目录及其子目录（用“.”表示）中查找任何扩展名为“c”的文件
+----
+===== ls 命令
+----
+ls 列出当前目录的文件,目录
+ls -l 列出当前目录的文件目录,包含详细,不包含隐藏文件.或者 ll
+ls -la 列出当前目录的文件目录,包含详细,不包含隐藏文件.或者 ll -a
+l. 列出当前目录的隐藏文件
+----
+
+===== mount 命令挂载文件系统
+----
+mount /dev/vdb1 /mnt 将磁盘/dev/vdb1 挂载到/mnt中
+----

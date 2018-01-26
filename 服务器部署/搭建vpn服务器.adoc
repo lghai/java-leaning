@@ -55,7 +55,6 @@ image::搭建vpn服务器\搭建vpn服务器-5b814.png[]
 vi /etc/shadowsocks.json
 ----
 
-内容如下
 ----
 {
     "server":"0.0.0.0",

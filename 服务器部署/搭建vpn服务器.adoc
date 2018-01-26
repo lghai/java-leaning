@@ -54,6 +54,7 @@ image::搭建vpn服务器\搭建vpn服务器-5b814.png[]
 ----
 vi /etc/shadowsocks.json
 ----
+
 内容如下
 ----
 {
@@ -67,6 +68,7 @@ vi /etc/shadowsocks.json
     "fast_open": false
 }
 ----
+
 或（多个SS账号）
 ----
 {
@@ -83,18 +85,16 @@ vi /etc/shadowsocks.json
 }
 ----
 ====== 前台运行
-
-  ssserver -c /etc/shadowsocks.json
-
+----
+ssserver -c /etc/shadowsocks.json
+----
 ====== 后台运行
-
-  ssserver -c /etc/shadowsocks.json -d start
-  ssserver -c /etc/shadowsocks.json -d stop
-
-
-一般云服务器上默认没有安装防火墙,云服务器供应商有的会提供专门的防火墙服务,设置请参考供应商的设置, 文档提供一般的<<ref_FW,防火墙配置>>
-
-
+----
+ssserver -c /etc/shadowsocks.json -d start
+ssserver -c /etc/shadowsocks.json -d stop
+----
+[TIP]
+ 一般云服务器上默认没有安装防火墙,云服务器供应商有的会提供专门的防火墙服务,设置请参考供应商的设置, 文档提供一般的<<ref_FW,防火墙配置>>
 
 ===== centos 6 更换系统内核kernel为2.6.32-504.el6.i686
 首先需要确认自己的内核版本，输入命令uname -a

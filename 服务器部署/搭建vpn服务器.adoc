@@ -34,7 +34,7 @@ chmod +x shadowsocks.sh
 ----
 [NOTE]
 ====
-其他版本
+其他版本 推荐,功能更加强大
 
 wget -N --no-check-certificate https://softs.fun/Bash/ssrmu.sh && chmod +x ssrmu.sh && bash ssrmu.sh
 
@@ -54,17 +54,7 @@ image::搭建vpn服务器\搭建vpn服务器-5b814.png[]
 ----
 vi /etc/shadowsocks.json
 ----
-====== 前台运行
-
-  ssserver -c /etc/shadowsocks.json
-
-====== 后台运行
-
-  ssserver -c /etc/shadowsocks.json -d start
-  ssserver -c /etc/shadowsocks.json -d stop
-
 内容如下
-
 ----
 {
     "server":"0.0.0.0",
@@ -92,13 +82,65 @@ vi /etc/shadowsocks.json
     "fast_open": false
 }
 ----
+====== 前台运行
+
+  ssserver -c /etc/shadowsocks.json
+
+====== 后台运行
+
+  ssserver -c /etc/shadowsocks.json -d start
+  ssserver -c /etc/shadowsocks.json -d stop
+
+
+一般云服务器上默认没有安装防火墙,云服务器供应商有的会提供专门的防火墙服务,设置请参考供应商的设置, 文档提供一般的<<ref_FW,防火墙配置>>
 
 
 
+===== centos 6 更换系统内核kernel为2.6.32-504.el6.i686
+首先需要确认自己的内核版本，输入命令uname -a
+输出中有i686则为32位，有x86_64则为64位。
 
-===== 配置防火墙
-若上面的配置成功后,客户端无法登入,则可能需要配置防火墙
+centos 6更换系统内核kernel为2.6.32-504.el6.i686的方法 以便支持锐速TCP加速软件
 
+----
+wget http://github.itzmx.com/1265578519/kernel/master/6.5/kernel-2.6.32-504.el6.x86_64.rpm -O kernel-2.6.32-504.el6.x86_64.rpm
+rpm -ivh kernel-2.6.32-504.el6.x86_64.rpm --force
+重启
+reboot
+----
+
+备用下载服务器
+----
+wget http://ftp.scientificlinux.org/linux/scientific/6.5/x86_64/updates/security/kernel-2.6.32-504.el6.x86_64.rpm
+rpm -ivh kernel-2.6.32-504.el6.x86_64.rpm --force
+----
+centos 7.1的
+----
+http://ftp.scientificlinux.org/linux/scientific/7.1/x86_64/updates/security/kernel-3.10.0-229.1.2.el7.x86_64.rpm
+----
+
+===== 锐速破解版安装方法
+
+大概2月份的时候锐速宣布不再免费，原来宣传的永久免费20M也没了。一时间让广大vps爱好者陷入低谷，不过各路破解高手也是不断抛砖引玉，从开始的改MAC方法到后来的算lic方法，现在连一键安装包都出来了，算是比较成熟了吧。这里转载一个用的比较多的一键安装包，亲测可用，由91yun.org博主带来的。
+
+脚本已托管在Github： https://github.com/91yun/serverspeeder
+
+锐速破解版安装方法
+----
+wget -N --no-check-certificate https://github.com/91yun/serverspeeder/raw/master/serverspeeder.sh && bash serverspeeder.sh
+----
+
+锐速破解版卸载方法：
+----
+chattr -i /serverspeeder/etc/apx* && /serverspeeder/bin/serverSpeeder.sh uninstall -f
+----
+查看锐速启动状态
+----
+/serverspeeder/bin/serverSpeeder.sh status
+----
+
+
+===== 配置防火墙 [[ref_FW]]
 如果服务器开了防火墙,则需要配置防火墙.若没有,请略过!
 
 ====== 查看所有端口 netstat
@@ -248,47 +290,3 @@ firewall-cmd --zone=public --add-port=80/tcp(永久生效再加上 --permanent)
 
 –permanent #永久生效，没有此参数重启后失效
 ====
-
-
-===== centos 6 更换系统内核kernel为2.6.32-504.el6.i686
-首先需要确认自己的内核版本，输入命令uname -a
-输出中有i686则为32位，有x86_64则为64位。
-
-centos 6更换系统内核kernel为2.6.32-504.el6.i686的方法 以便支持锐速TCP加速软件
-
-----
-wget http://github.itzmx.com/1265578519/kernel/master/6.5/kernel-2.6.32-504.el6.x86_64.rpm -O kernel-2.6.32-504.el6.x86_64.rpm
-rpm -ivh kernel-2.6.32-504.el6.x86_64.rpm --force
-重启
-reboot
-----
-
-备用下载服务器
-----
-wget http://ftp.scientificlinux.org/linux/scientific/6.5/x86_64/updates/security/kernel-2.6.32-504.el6.x86_64.rpm
-rpm -ivh kernel-2.6.32-504.el6.x86_64.rpm --force
-----
-centos 7.1的
-----
-http://ftp.scientificlinux.org/linux/scientific/7.1/x86_64/updates/security/kernel-3.10.0-229.1.2.el7.x86_64.rpm
-----
-
-===== 锐速破解版安装方法
-
-大概2月份的时候锐速宣布不再免费，原来宣传的永久免费20M也没了。一时间让广大vps爱好者陷入低谷，不过各路破解高手也是不断抛砖引玉，从开始的改MAC方法到后来的算lic方法，现在连一键安装包都出来了，算是比较成熟了吧。这里转载一个用的比较多的一键安装包，亲测可用，由91yun.org博主带来的。
-
-脚本已托管在Github： https://github.com/91yun/serverspeeder
-
-锐速破解版安装方法
-----
-wget -N --no-check-certificate https://github.com/91yun/serverspeeder/raw/master/serverspeeder.sh && bash serverspeeder.sh
-----
-
-锐速破解版卸载方法：
-----
-chattr -i /serverspeeder/etc/apx* && /serverspeeder/bin/serverSpeeder.sh uninstall -f
-----
-查看锐速启动状态
-----
-/serverspeeder/bin/serverSpeeder.sh status
-----

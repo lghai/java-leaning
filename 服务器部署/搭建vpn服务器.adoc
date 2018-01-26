@@ -34,7 +34,7 @@ chmod +x shadowsocks.sh
 ----
 [NOTE]
 ====
-其他版本 推荐,功能更加强大
+SSR版本 推荐,功能更加强大
 
 wget -N --no-check-certificate https://softs.fun/Bash/ssrmu.sh && chmod +x ssrmu.sh && bash ssrmu.sh
 

@@ -21,10 +21,34 @@ ifdef::env-github[]
 :warning-caption: :warning:
 endif::[]
 
-=== shadowsocks
-操作系统：CentOS6
-安装shadowsocks服务端( link:https://github.com/shadowsocks/shadowsocks/wiki/Shadowsocks-%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E[参考官方Shadowsocks] )
 
+=== 前言
+[quote, 网络]
+____
+vpn在很多人心目中就是用来翻墙的工具，其实不是。vpn最主要的功能，并不是用来翻墙，只是它可以达到翻墙的目的。vpn--虚拟专用网络，它的功能是：在公用网络上建立专用网络，进行加密通讯。在企业网络和高校的网络中应用很广泛。
+你接入vpn，其实就是接入了一个专有网络，你的网络访问都从这个出口出去，你和vpn之间的通信是否加密，取决于你连接vpn的方式或者协议。
+
+ss：ss作者是clowwindy，大约两年前，他自己为了翻墙写了shadowsocks，简称ss或者叫影梭，后来他觉得这个东西非常好用，速度快，而且不会被封锁，他就把源码共享在了github上，然后就火了，但是后来作者被请去喝茶，删了代码，并且保证不再参与维护更新。现在这个好像是一个国外的大兄弟在维护。
+
+ssr：在ss作者被喝茶之后，github上出现了一个叫breakwa11(破娃)的帐号，声称ss容易被防火墙检测到，所以在混淆和协议方面做了改进，更加不容易被检测到，而且兼容ss，改进后的项目叫shadowsocks-R，简称ssr，然后ss用户和ssr用户自然分成了两个派别，互相撕逼，直到前阵子，破娃被人肉出来，无奈之下删除了ssr的代码，并且解散了所有相关群组。
+____
+===== 原理
+ss和ssr它的原理都是一样的，就是socks5代理，。socks代理只是简单的传递数据包，而不必关心是何种协议，所以socks代理比其他应用层代理要快的多。socks5代理是把你的网络数据请求通过一条连接你和代理服务器之间的通道，由服务器转发到目的地，这个过程中你是没有通过一条专用通道的，只是数据包的发出，然后被代理服务器收到，整个过程并没有额外的处理。通俗的说，现在你有一个代理服务器在香港，比如你现在想要访问google，你的电脑发出请求，流量通过socks5连接发到你在香港的服务器上，然后再由你在香港的服务器去访问google，再把访问结果传回你的电脑，这样就实现了翻墙
+
+===== vpn和ss/ssr的区别和优缺点
+1. ss/ssr的目的就是用来翻墙的，而vpn的目的是用来加密企业数据的，对于vpn来说安全是第一位的，而对于ss/ssr来说穿透防火墙是第一位，抗干扰性强，而且对流量做了混淆，所有流量在通过防火墙的时候，基本上都被识别为普通流量，也就是说你翻墙了，但是政府是检测不到你在翻墙的。两者的出发点和着重点就不同，ss/ssr更注重流量的混淆加密。如果要安全匿名上网，可以用vpn+tor或者ss/ssr+tor。
+
+2. 而安全性方面还要补充的一点就是，国内vpn服务商，政府是很容易拿到他们的服务器日志的，如果他们真的这样做了，你翻墙做了什么，一览无余
+
+=== shadowsocks
+
+操作系统：CentOS6
+安装shadowsocks服务端( link:https://github.com/shadowsocks/shadowsocks/wiki/Shadowsocks-%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E[参考github Shadowsocks] )
+
+[NOTE]
+====
+SSR版本 请参考,<<ref_SSR,详情链接>>
+====
 ===== 给服务器安装SS SERVER
 ----
 yum -y install wget
@@ -32,14 +56,7 @@ wget --no-check-certificate https://raw.githubusercontent.com/teddysun/shadowsoc
 chmod +x shadowsocks.sh
 ./shadowsocks.sh 2>&1 | tee shadowsocks.log
 ----
-[NOTE]
-====
-SSR版本 推荐,功能更加强大
 
-wget -N --no-check-certificate https://softs.fun/Bash/ssrmu.sh && chmod +x ssrmu.sh && bash ssrmu.sh
-
-wget -N --no-check-certificate https://raw.githubusercontent.com/ToyoDAdoubi/doubi/master/ssrmu.sh && chmod +x ssrmu.sh && bash ssrmu.sh
-====
 
 
 image::搭建vpn服务器\搭建vpn服务器-98ddf.png[]
@@ -47,6 +64,19 @@ image::搭建vpn服务器\搭建vpn服务器-98ddf.png[]
 
 image::搭建vpn服务器\搭建vpn服务器-5b814.png[]
 看到以上提示后就表明VPS上SS已经安装成功，并且已经设置了开机启动，VPS重启后不用手工启动SS
+
+===== 客户端
+此时, `ss服务器` 搭建完成.你现在需要 link:https://github.com/shadowsocks/shadowsocks-windows/releases[客户端] ,来连接服务器
+或者 link:https://github.com/shadowsocks/shadowsocks-windows/releases[安卓客户端]
+
+image::搭建vpn服务器\搭建vpn服务器-b64d9.png[title="windows客户端"]
+image::搭建vpn服务器\搭建vpn服务器-a47a4.png[title="配置客户端"]
+----
+PAC模式 表示绕过中国大陆,只有国外的ip地址国通代理访问, 建议PAC模式保证打开国内网站
+全局模式 表示所有ip地址都通过代理访问
+----
+image::搭建vpn服务器\搭建vpn服务器-a84af.png[title="从GFWList更新本地PAC文件"]
+
 
 ===== 编写配置（参考 link:https://github.com/shadowsocks/shadowsocks/wiki/Configuration-via-Config-File[Configuration] ）：
 
@@ -100,6 +130,11 @@ ssserver -c /etc/shadowsocks.json -d stop
 
 
 
+
+
+
+=== 锐速破解版安装方法
+
 ===== centos 6 更换系统内核kernel为2.6.32-504.el6.i686
 首先需要确认自己的内核版本，输入命令uname -a
 输出中有i686则为32位，有x86_64则为64位。
@@ -123,7 +158,7 @@ centos 7.1的
 http://ftp.scientificlinux.org/linux/scientific/7.1/x86_64/updates/security/kernel-3.10.0-229.1.2.el7.x86_64.rpm
 ----
 
-===== 锐速破解版安装方法
+===== 安装锐速破解版
 
 大概2月份的时候锐速宣布不再免费，原来宣传的永久免费20M也没了。一时间让广大vps爱好者陷入低谷，不过各路破解高手也是不断抛砖引玉，从开始的改MAC方法到后来的算lic方法，现在连一键安装包都出来了，算是比较成熟了吧。这里转载一个用的比较多的一键安装包，亲测可用，由91yun.org博主带来的。
 
@@ -143,6 +178,7 @@ chattr -i /serverspeeder/etc/apx* && /serverspeeder/bin/serverSpeeder.sh uninsta
 /serverspeeder/bin/serverSpeeder.sh status
 ----
 
+=== 附录
 
 ===== 配置防火墙 [[ref_FW]]
 如果服务器开了防火墙,则需要配置防火墙.若没有,请略过!
@@ -294,3 +330,9 @@ firewall-cmd --zone=public --add-port=80/tcp(永久生效再加上 --permanent)
 
 –permanent #永久生效，没有此参数重启后失效
 ====
+
+===== SSR 服务器搭建 [[ref_SSR]]
+
+wget -N --no-check-certificate https://softs.fun/Bash/ssrmu.sh && chmod +x ssrmu.sh && bash ssrmu.sh
+
+wget -N --no-check-certificate https://raw.githubusercontent.com/ToyoDAdoubi/doubi/master/ssrmu.sh && chmod +x ssrmu.sh && bash ssrmu.sh

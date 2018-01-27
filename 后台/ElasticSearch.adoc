@@ -62,7 +62,7 @@ elasticsearch-head是一个elasticsearch的集群管理工具，它是完全由H
 
 插件安装方法：
 
-1. 在目录elasticsearch/bin/中运行 `plugin.bat -install Aconex/elasticsearch-head` 或者在 https://github.com/mobz/elasticsearch-head[git] 中下载zip,解压到 `plugins/head`目录下
+1. 在目录elasticsearch/bin/中运行 `plugin.bat -install Aconex/elasticsearch-head` 或者在 https://github.com/mobz/elasticsearch-head[git] 中下载zip,解压到 `plugins/head` 目录下
 2. 运行es
 3. 浏览器中打开 `http://localhost:9200/_plugin/head/`
 

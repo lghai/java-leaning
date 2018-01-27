@@ -320,7 +320,7 @@ ElasticSearch 默认采用分词器， 单个字分词 ，效果很差,所以采
 
 步骤:
 
-1. 下载开源项目(文档采用1.10.0版本)
+1. 下载开源项目(文档采用 link:https://github.com/medcl/elasticsearch-analysis-ik/archive/v1.10.0.zip[1.10.0] 版本)
 2. 进入项目文件 `mvn clean package`
 3. 目录中 `target\releases` 下的 `elasticsearch-analysis-ik-1.10.0.zip` 解压到 `elasticsearch-2.4.0\plugins\analysis-ik` 目录下
 4. 配置elasticsearch.yml 在 `elasticsearch-2.4.0\config` 中,在文件的最后加入 `index.analysis.analyzer.ik.type: "ik"` 需要注意的是, `:` 后面需要一个空格

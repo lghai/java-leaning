@@ -1,4 +1,4 @@
-= 基于centos 搭建VPN(shadowsocks+serverspeeder)
+= 基于centos 搭建VPN(shadowsocks+serverspeeder) 在此之前你需要一个 link:Droplet.adoc[服务器]
 
 // Settings:
 :source-highlighter: prettify

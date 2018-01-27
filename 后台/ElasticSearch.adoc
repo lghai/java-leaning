@@ -367,36 +367,35 @@ client.admin().indices().prepareDelete("blog2").get();
 [source,java]
 ----
 @Test
-	public void createMapping() throws Exception {
-		TransportClient client = TransportClient.builder().build()
-				.addTransportAddress(new InetSocketTransportAddress(
-						InetAddress.getByName("127.0.0.1"),9300));
-		// 创建索引
-		client.admin().indices().prepareCreate("blog2").get();
-		// 添加映射
-		XContentBuilder builder = XContentFactory.jsonBuilder()
-			.startObject()
-				.startObject("article")
-					.startObject("properties")
-						.startObject("id")
-							.field("type","integer").field("store","yes")
-						.endObject()
-						.startObject("title")
-							.field("type", "string").field("store", "yes").field("analyzer", "ik")
-						.endObject()
-						.startObject("content")
-							.field("type", "string").field("store", "yes").field("analyzer", "ik")
-						.endObject()
+public void createMapping() throws Exception {
+	TransportClient client = TransportClient.builder().build()
+			.addTransportAddress(new InetSocketTransportAddress(
+					InetAddress.getByName("127.0.0.1"),9300));
+	// 创建索引
+	client.admin().indices().prepareCreate("blog2").get();
+	// 添加映射
+	XContentBuilder builder = XContentFactory.jsonBuilder()
+		.startObject()
+			.startObject("article")
+				.startObject("properties")
+					.startObject("id")
+						.field("type","integer").field("store","yes")
+					.endObject()
+					.startObject("title")
+						.field("type", "string").field("store", "yes").field("analyzer", "ik")
+					.endObject()
+					.startObject("content")
+						.field("type", "string").field("store", "yes").field("analyzer", "ik")
 					.endObject()
 				.endObject()
-			.endObject();
-		// 创建映射 请求
-		PutMappingRequest mappingRequest = Requests.putMappingRequest("blog2").type("article").source(builder);
-		// 执行
-		client.admin().indices().putMapping(mappingRequest).get();
+			.endObject()
+		.endObject();
+	// 创建映射 请求
+	PutMappingRequest mappingRequest = Requests.putMappingRequest("blog2").type("article").source(builder);
+	// 执行
+	client.admin().indices().putMapping(mappingRequest).get();
 
-		client.close();
-	}
+	client.close();
 }
 ----
 image::ElasticSearch\ElasticSearch-a3210.png[title="执行结果",align="center"]
@@ -408,12 +407,12 @@ mapping映射的格式为
 ----
 "mappings" : {
   "article" : {
-  	"dynamic" : "false",
-  	"properties" : {
-  		"id" : { "type" : "integer" },
-  		"title" : { "type" : "string" },
-  		"content" : { "type" : "string" }
-  	}
+    "dynamic" : "false",
+    "properties" : {
+      "id" : { "type" : "integer" },
+      "title" : { "type" : "string" },
+      "content" : { "type" : "string" }
+    }
   }
 }
 ----
@@ -473,18 +472,18 @@ http://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.1
 [source,xml]
 ----
 <dependency>
-	<groupId>com.fasterxml.jackson.core</groupId>
-	<artifactId>jackson-core</artifactId>
-	<version>2.8.1</version>
+  <groupId>com.fasterxml.jackson.core</groupId>
+  <artifactId>jackson-core</artifactId>
+  <version>2.8.1</version>
 </dependency>
 <dependency>
-	<groupId>com.fasterxml.jackson.core</groupId>
-	<artifactId>jackson-databind</artifactId>
-	<version>2.8.1</version>
+  <groupId>com.fasterxml.jackson.core</groupId>
+  <artifactId>jackson-databind</artifactId>
+  <version>2.8.1</version>
 </dependency>
 <dependency>
-	<groupId>com.fasterxml.jackson.core</groupId>
-	<artifactId>jackson-annotations</artifactId>
-	<version>2.8.1</version>
+  <groupId>com.fasterxml.jackson.core</groupId>
+  <artifactId>jackson-annotations</artifactId>
+  <version>2.8.1</version>
 </dependency>
 ----

@@ -330,6 +330,11 @@ firewall-cmd --zone=public --add-port=80/tcp(永久生效再加上 --permanent)
 
 –permanent #永久生效，没有此参数重启后失效
 ====
+===== 给服务器安装中文字体 支持
+----
+yum groupinstall "fonts"
+----
+
 
 ===== SSR 服务器搭建 [[ref_SSR]]
 

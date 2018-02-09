@@ -1,0 +1,11 @@
+.project
+
+.gitignore
+
+*.md.html
+
+target
+.idea
+.settings
+.project
+*.iml

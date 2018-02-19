@@ -62,3 +62,26 @@ image::centos服务器安装设置\centos-32sc3.jpg[]
 15.重启mysql `service mysql restart`
 
 ===== tomcat
+1. http://tomcat.apache.org/download-70.cgi[下载tomcat]
+2. 解压
+
+===== redis
+1.  https://redis.io/download[下载redis]
+2. 解压文件 `tar -xzf redis-4.0.8.tar.gz`
+3. `cd redis-4.0.8`
+4. `make`
+5. `make install` 将安装到 `/usr/local/bin` 中， `make PREFIX=/usr/soft/redis install` 指定安装目录
+6. 将redis添加入service服务中 `cp redis-4.0.8/utils/redis_init_script /etc/rc.d/init.d/redis`
+7. `vim /etc/rc.d/init.d/redis` 在 `$EXEC $CONF` 后 加上 `&` 表示将服务转到后面运行
+8. 配置 `CONF="/etc/redis/${REDISPORT}.conf"` 即 `redis.conf` 的文件位置，源文件在 `redis-4.0.8` 文件夹中
+9. 例如： `cp /*/redis-4.0.8/redis.conf /usr/local/etc` ,那么配置 `CONF="/usr/local/etc/redis.conf"`
+10. 注册redis 服务 `chkconfig --add redis`
+10. 此时, 可以启动服务 测试 `service redis start`
+11. 若需要关闭redis服务需要使用客户端程序正常停止 `redis-cli shutdown`
+
+===== VirtualBox
+1. https://www.virtualbox.org/wiki/Linux_Downloads[下载VirtualBox]
+2. `rpm -ivh VirtualBox-5.2-5.2.6_120293_el6-1.x86_64.rpm`
+3. 根据安装提示 需要安装 `yum install kernel-devel kernel-devel-2.6.32-696.el6.x86_64`
+4. reboot
+

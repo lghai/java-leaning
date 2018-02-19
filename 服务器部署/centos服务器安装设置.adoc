@@ -63,7 +63,7 @@ image::centos服务器安装设置\centos-32sc3.jpg[]
 
 ===== tomcat
 1. http://tomcat.apache.org/download-70.cgi[下载tomcat]
-2. 解压
+2. 解压 ``
 
 ===== redis
 1.  https://redis.io/download[下载redis]
@@ -85,3 +85,9 @@ image::centos服务器安装设置\centos-32sc3.jpg[]
 3. 根据安装提示 需要安装 `yum install kernel-devel kernel-devel-2.6.32-696.el6.x86_64`
 4. reboot
 
+===== 更换163源
+1. `mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup` 备份原来的源
+2. `wget http://mirrors.163.com/.help/CentOS6-Base-163.repo` 获取163源
+3. `mv /etc/yum.repos.d/CentOS6-Base-163.repo /etc/yum.repos.d/CentOS-Base.repo` 重命名
+4. `yum clean all`
+5. `yum makecache`

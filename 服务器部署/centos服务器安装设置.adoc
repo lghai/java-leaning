@@ -1,4 +1,4 @@
-= centos 常用命令
+= centos 服务器安装设置
 // Settings:
 :source-highlighter: prettify
 :experimental:
@@ -20,8 +20,45 @@ ifdef::env-github[]
 :warning-caption: :warning:
 endif::[]
 
-=== centos rpm 命令
+=== 开发软件安装
+===== jdk
+1. 卸载系统中openjdk 参考<<ref_rpm,rpm>>命令
+1. 下载从官网下载jdk
+2. `tar -zxvf jdk-8u161-linux-x64.tar.gz` 解压jdk
+3. `mv jdk1.8.0_161 /usr/local/app` 将解压的文件夹移动至 `/usr/local/app` 文件夹
+4. `vim /etc/profile` 配置环境变量，在结尾添加
+`export JAVA_HOME=/usr/local/app/jdk1.8.0_161` 和
+`export PATH=$JAVA_HOME/bin:$PATH`
+5. 重新加载环境变量 `source /etc/profile` ,测试 `java -version`
+
+===== centos rpm 命令[[ref_rpm]]
 1. 查看某个包是否安装，用 rpm -qa | grep "软件或者包的名字"。例如,
 `rpm -qa | grep openjdk`
 2. 删除某个包, 用 rpm -e --nodeps "软件或者包的名字",-e表示卸载, --nodeps是不检查依赖。例如,
 `rpm -e --nodeps java-1.6.0-openjdk-1.6.0.41-1.13.13.1.el6_8.x86_64`
+3. 安装rpm包 `rpm -ivh MySQL-client-5.6.36-1.el6.x86_64.rpm --nosignature`
+
+===== mysql
+1. 卸载系统中mysql 参考<<ref_rpm,rpm>>命令
+2. 下载 https://downloads.mysql.com/archives/community[mysql]
+3. `tar -xvf MySQL-5.6.36-1.el6.x86_64.rpm-bundle.tar -C mysql` 解压到mysql文件夹，解压结果为7个rpm包
+4. 需要安装server 和client
+`rpm -ivh MySQL-server-5.6.36-1.el6.x86_64.rpm --nosignature` 和
+`rpm -ivh MySQL-client-5.6.36-1.el6.x86_64.rpm`
+5. 启动mysql `service mysql start`
+6. 将mysql加到系统服务中并设置开机启动.加入到系统服务： `chkconfig --add mysql` .自动启动： `chkconfig mysql on`
+7. 查看 mysql的初始化密码 `head /root/.mysql_secret`
+8. 登入mysql `mysql –uroot -p密码`
+9. 修改mysql的密码 `set password = password('root');`
+10. 开启mysql的远程登录 `grant all privileges on *.* to 'root' @'%' identified by 'root';`  `flush privileges;`
+11. 开放Linux的对外访问的端口3306 `/sbin/iptables -I INPUT -p tcp --dport 3306 -j ACCEPT`
+12. 将修改永久保存到防火墙中 `/etc/rc.d/init.d/iptables save`
+13. mysql默认使用的编码方式是：latin1，需要修改为utf8，当前编码方式可以执行如下SQL进行查看
+    `show variables like 'character%'; show variables like 'coll%';`
+14. 修改mysql的编码方式为utf8 `vim /usr/my.cnf` 添加 `character_set_server=utf8` 和 `[client] default-character-set=utf8`
+
+image::centos服务器安装设置\centos-32sc3.jpg[]
+
+15.重启mysql `service mysql restart`
+
+===== tomcat

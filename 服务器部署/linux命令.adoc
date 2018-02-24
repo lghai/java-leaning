@@ -20,14 +20,12 @@ ifdef::env-github[]
 :warning-caption: :warning:
 endif::[]
 
-=== find 命令
-===== find命令的常用选项及实例
-====== -name 按照文件名查找文件。
+===== find 命令 -name 按照文件名查找文件。
 ----
 find /dir -name filename  在/dir目录及其子目录下面查找名字为filename的文件
 find . -name "*.c" 在当前目录及其子目录（用“.”表示）中查找任何扩展名为“c”的文件
 ----
-===== ls 命令
+==== ls 命令
 ----
 ls 列出当前目录的文件,目录
 ls -l 列出当前目录的文件目录,包含详细,不包含隐藏文件.或者 ll
@@ -36,6 +34,12 @@ l. 列出当前目录的隐藏文件
 ----
 
 ===== mount 命令挂载文件系统
-----
-mount /dev/vdb1 /mnt 将磁盘/dev/vdb1 挂载到/mnt中
-----
+0. `fdisk -l` 查看可以挂载的分区
+1. `mount /dev/sda1 /mnt/test` 将磁盘/dev/sda1 挂载到/mnt/test文件夹中
+2. 如需要开机就挂载的话,需要在 `/etc/fstab` 添加 `/dev/sda1 /test ext3 defaults 0  0`。 0, 0 表示开机不检查磁盘
+3. `umount /dev/sda1` 卸载分区
+4. 如果挂载的分区是ntfs格式,则需要安装 `ntfs-3g`
+5. http://linux.softpedia.com/get/System/Hardware/ntfs-3g-15028.shtml[官网下载] 源文件
+6. `./configure` `make` `make instal`
+7. `mount -t ntfs-3g /dev/sda1 /mnt/windows`
+8. `vim /etc/fstab` `/dev/sda1 /mnt/windows ntfs-3g defaults 0 0`

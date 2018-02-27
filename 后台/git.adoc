@@ -1,0 +1,45 @@
+
+= git
+
+// Settings:
+:source-highlighter: prettify
+:experimental:
+:idprefix:
+:idseparator: -
+ifndef::env-github[:icons: font]
+ifdef::env-github,env-browser[]
+:toc: macro
+:toclevels: 1
+endif::[]
+ifdef::env-github[]
+:status:
+:outfilesuffix: .adoc
+:!toc-title:
+:caution-caption: :fire:
+:important-caption: :exclamation:
+:note-caption: :paperclip:
+:tip-caption: :bulb:
+:warning-caption: :warning:
+endif::[]
+
+1. 可以通过-all一次提交多个仓库
+
+2. 配置远程仓库
+`git remote add origin https://url`
+
+3. 再添加一个远程仓库
+`git remote set-url --add origin https://url`
+
+4. 注意这里多次添加需要用
+`git remote set-url --add`
+5. 不然会报错：
+`fatal: remote origin already exists.``
+6. 或者改名
+`git remote add otherOrigin https://url`
+
+7. 一次提交到所有远程仓库
+`git push --all`
+
+8. 注意
+`git pull 是 git pull (from) origin (to) master`
+`git push 是 git push (to) origin (from) master`

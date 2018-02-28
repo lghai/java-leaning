@@ -1,0 +1,66 @@
+= 通用mapper 的使用
+// Settings:
+:source-highlighter: prettify
+:experimental:
+:idprefix:
+:idseparator: -
+ifndef::env-github[:icons: font]
+ifdef::env-github,env-browser[]
+:toc: macro
+:toclevels: 1
+endif::[]
+ifdef::env-github[]
+:status:
+:outfilesuffix: .adoc
+:!toc-title:
+:caution-caption: :fire:
+:important-caption: :exclamation:
+:note-caption: :paperclip:
+:tip-caption: :bulb:
+:warning-caption: :warning:
+endif::[]
+
+=== 什么是通用Mapper？
+1. 开源中国的介绍页面: https://www.oschina.net/p/mybatis-mapper
+2. GitHub介绍页面: https://github.com/abel533/Mapper
+3. 作者: http://blog.csdn.net/isea533
+
+image::通用mapper\通用mapper-b888d.png[]
+
+=== 为什么要学习通用Mapper
+在我们的日常开发中，单表的增删改查是一个非常频繁的操作，而通常，我们都需要自己来定义每一张表的Mapper.xml文件，并且定义增删改查的sql语句，这些工作具有大量的重复性，意义不大，很浪费时间。
+
+通用Mapper可以通过Mybatis的拦截器原理，动态的帮我们实现单表的增删改查功能，大大降低了我们的开发成本，减少了我们的工作量。
+
+=== 怎么使用通用Mapper
+在一个maven工程中,使用步骤大概如下:
+
+===== 1. pom中导入依赖
+[source,xml]
+----
+<!-- 通用Mapper  -->
+<dependency>
+  <groupId>com.github.abel533</groupId>
+  <artifactId>mapper</artifactId>
+  <version>2.3.4</version>
+</dependency>
+----
+===== 2. 在mybatis-config.xml 全局配置文件中.添加通用Mapper拦截器
+[source,xml]
+----
+<!-- 通用Mapper的插件 -->
+<plugin interceptor="com.github.abel533.mapperhelper.MapperInterceptor">
+  <!--主键自增回写方法,默认值MYSQL -->
+  <property name="IDENTITY" value="MYSQL" />
+  <!--通用Mapper默认接口，我们定义的Mapper需要实现该接口 -->
+  <property name="mappers" value="com.github.abel533.mapper.Mapper" />
+</plugin>
+----
+===== 3. 使自定义的UserMapper接口 继承Mapper接口
+image::通用mapper\通用mapper-4170d.png[]
+
+===== 4. 此时，我们的Mapper就已经具备了通用Mapper中提前定义好的方法：
+
+image::通用mapper\通用mapper-2f6e4.png[]
+
+现在，我们的UserMapper接口已经具备了单标的增删改查方法，但是并没有对应的Mapper.xml文件，我们不需要写。因为通用Mapper会帮我们动态生成这些方法对应的Sql和statement

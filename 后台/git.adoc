@@ -43,3 +43,4 @@ endif::[]
 8. 注意
 `git pull 是 git pull (from) origin (to) master`
 `git push 是 git push (to) origin (from) master`
+9. `touch .gitignore` 生成gitignore文件

@@ -72,10 +72,11 @@ image::centos服务器安装设置\centos-32sc3.jpg[]
 3. `cd redis-4.0.8`
 4. `make`
 5. `make install` 将安装到 `/usr/local/bin` 中， `make PREFIX=/usr/soft/redis install` 指定安装目录
-6. 将redis添加入service服务中 `cp redis-4.0.8/utils/redis_init_script /etc/rc.d/init.d/redis`
+6. 将redis添加入service服务中 `cp ./redis-4.0.8/utils/redis_init_script /etc/rc.d/init.d/redis`
 7. `vim /etc/rc.d/init.d/redis` 在 `$EXEC $CONF` 后 加上 `&` 表示将服务转到后面运行
 8. 配置 `CONF="/etc/redis/${REDISPORT}.conf"` 即 `redis.conf` 的文件位置，源文件在 `redis-4.0.8` 文件夹中
-9. 例如： `cp /*/redis-4.0.8/redis.conf /usr/local/etc` ,那么配置 `CONF="/usr/local/etc/redis.conf"`
+9. 例如： `cp ./redis-4.0.8/redis.conf /usr/local/etc/redis/6379.conf` ,那么配置 `CONF="/usr/local/etc/redis/6379.conf"`
+10. `vim /usr/local/etc/redsi/6379.conf` 在第二行添加 `#chkconfig: 2345 80 90` 保证可以注册redis服务；将 `daemonize no` 改为 `daemonize yes` 也是表示后台运行
 10. 注册redis 服务 `chkconfig --add redis`
 10. 此时, 可以启动服务 测试 `service redis start`
 11. 若需要关闭redis服务需要使用客户端程序正常停止 `redis-cli shutdown`

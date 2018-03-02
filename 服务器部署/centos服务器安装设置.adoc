@@ -60,6 +60,7 @@ endif::[]
 image::centos服务器安装设置\centos-32sc3.jpg[]
 
 15.重启mysql `service mysql restart`
+======
 
 ===== tomcat
 1. http://tomcat.apache.org/download-70.cgi[下载tomcat]

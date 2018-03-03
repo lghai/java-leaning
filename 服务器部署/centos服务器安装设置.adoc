@@ -55,7 +55,7 @@ endif::[]
 12. 将修改永久保存到防火墙中 `/etc/rc.d/init.d/iptables save`
 13. mysql默认使用的编码方式是：latin1，需要修改为utf8，当前编码方式可以执行如下SQL进行查看
     `show variables like 'character%'; show variables like 'coll%';`
-14. 修改mysql的编码方式为utf8 `vim /usr/my.cnf` 添加 `character_set_server=utf8` 和 `[client] default-character-set=utf8`
+14. 修改mysql的编码方式为utf8 `vim /etc/my.cnf` 添加 `character_set_server=utf8` 和 `[client] default-character-set=utf8`
 
 image::centos服务器安装设置\centos-32sc3.jpg[]
 

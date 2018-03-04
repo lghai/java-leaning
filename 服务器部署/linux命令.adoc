@@ -43,3 +43,6 @@ l. 列出当前目录的隐藏文件
 6. `./configure` `make` `make instal`
 7. `mount -t ntfs-3g /dev/sda1 /mnt/windows`
 8. `vim /etc/fstab` `/dev/sda1 /mnt/windows ntfs-3g defaults 0 0`
+
+===== yum  命令
+1. `yum erase libreoffice\*` 删除libreoffice 所有套件,这会将依赖libreoffice的保移除

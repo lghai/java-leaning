@@ -4,7 +4,7 @@
 ### 引入
 >OCUpload为jQuery的插件(One Click Upload)对于传统的文件上，只能通过form表单，将enctype设置为multipart/form-data，选中文件后还需在页面点击submit提交按钮，提交表单，才能在后台接收上传的文件并进行相关字段解析，上传成功后，页面还要刷新，这样并不符合我们的某些实际需求。而ajax又不支持文件上传的功能
 
-### 解决方案
+### 解决方案 
 ```html
 <iframe id="iframefile" style="display:none" ></iframe>
 <form target="text" action="xxx" method="post" target="iframefile" enctype="multipart/form-data">

@@ -24,6 +24,7 @@ static InetAddress getLocalHost()
 ```java
 @Test
 public void testName() throws Exception {
+  System.out.println(InetAddress.getByName("www.oracle.com"));
 	System.out.println(InetAddress.getLocalHost().getHostName());
 	System.out.println(InetAddress.getLocalHost().getCanonicalHostName());
 	System.out.println(InetAddress.getLocalHost().getHostAddress());
@@ -32,6 +33,7 @@ public void testName() throws Exception {
 ```
 ### 结果
 ```
+www.oracle.com/223.119.154.27
 hai-PC
 hai-PC
 192.168.56.1

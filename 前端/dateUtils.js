@@ -93,7 +93,14 @@ Date.prototype.toString = function(formatter) {
         return str;
     }
     var thisYear = this.getFullYear().toString();
-    var thisMonth = (this.)
+    var thisMonth = (this.getMonth()+1).toString();
+    var thisDate = this.getDate().toString();
+    if (formatter == undefined){
+        return thisYear + addZero(thisMonth) + addZero(thisDate);
+    }else{
+        return  formatter.replace('yyyy',thisYear).replace('yy',addZero((thisYear-2000).toString()))
+        .replace('mm',addZero(thisMonth)).replace('m',thisMonth).replace('dd',addZero(thisDate)).replace('d',thisDate);
+    }
 }
 
 

@@ -4,7 +4,7 @@ Date.prototype.getfullMonth = function(){
 
 function lastDayOfMonth(strdate){
     return new Date(strdate.substr(0,4),strdate.substr(4,2),0);
-};
+}
 
 function dateAdd(addCount){
     var d = new Date();
@@ -13,7 +13,7 @@ function dateAdd(addCount){
     } else {
         return new Date(d.getFullYear(), d.getMonth(), d.getDate());
     }
-};
+}
 
 function monthAdd(addCount) {
     var d = new Date();
@@ -30,7 +30,7 @@ function yearAdd(addCount) {
 function firstDayOfMonth() {
     var d = new Date();
     return new Date(d.getFullYear(), d.getMonth(), 1);
-};
+}
 
 Date.prototype.add = function(addCount) {
     return new Date( this.getFullYear() ,this.getMonth(), this.getDate() + addCount);
@@ -44,47 +44,47 @@ Date.prototype.addMonth = function(addCount) {
 
 Date.prototype.addYear = function(addCount) {
     return new Date (this.getFullYear + addCount, this.getMonth(), this.getDate());
-}
+};
 
 Date.prototype.daysAfter = function (compDate){
     return Math.round((this.getTime() - compDate.getTime()) / (100*3600*24));
-}
+};
 
 Date.prototype.monthsAfter = function (compDate) {
     return this.yearsAfter(compDate) * 12 + this.getMonth() - compDate.getMonth();
-}
+};
 
 Date.prototype.yearsAfter = function(compDate) {
     return this.getFullYear() - compDate.getFullYear();
-}
+};
 
 Date.prototype.firstDayOfMonth = function() {
     return new Date(this.getFullYear(), this.getMonth(), 1);
-}
+};
 
 Date.prototype.lastDayOfMonth = function() {
     return new Date(this.getFullYear(), this.getMonth() +1, 0);
-}
+};
 
 Date.prototype.isAfter = function(compDate) {
     return this.getTime() > compDate.getTime();
-}
+};
 
 Date.prototype.isAfterOrEquals = function(compDate) {
     return this.getTime() >=compDate.getTime();
-}
+};
 
 Date.prototype.isBefore = function(compDate) {
     return this.getTime() < compDate.getTime();
-}
+};
 
 Date.prototype.isBeforeOrEquals = function(compDate) {
     return this.getTime() <= compDate.getTime();
-}
+};
 
 Date.prototype.isEquals = function(compDate) {
     return this.getTime() ==compDate.getTime();
-}
+};
 
 Date.prototype.toString = function(formatter) {
     function addZero(str) {
@@ -101,12 +101,4 @@ Date.prototype.toString = function(formatter) {
         return  formatter.replace('yyyy',thisYear).replace('yy',addZero((thisYear-2000).toString()))
         .replace('mm',addZero(thisMonth)).replace('m',thisMonth).replace('dd',addZero(thisDate)).replace('d',thisDate);
     }
-}
-
-
-
-
-
-
-
-
+};

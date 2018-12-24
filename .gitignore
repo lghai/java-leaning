@@ -1,9 +1,5 @@
 .project
-
-.gitignore
-
 *.md.html
-
 target
 .idea
 .settings

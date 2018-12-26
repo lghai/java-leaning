@@ -1,6 +1,7 @@
 package com.lghai;
 
 import net.sf.jsqlparser.JSQLParserException;
+import net.sf.jsqlparser.expression.Alias;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.LongValue;
 import net.sf.jsqlparser.expression.StringValue;
@@ -15,6 +16,7 @@ import net.sf.jsqlparser.util.SelectUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertTrue;
@@ -104,7 +106,7 @@ public class AppTest {
     }
 
     /**
-     * 测试null条件
+     * 解析join条件
      */
     @Test
     public void testParseJoin() throws Exception {
@@ -144,15 +146,7 @@ public class AppTest {
 
             }
 
-            Select select1 = SelectUtils.buildSelectFromTable(new Table("TABLE1"));
-            System.out.println(select1.toString());//SELECT * FROM TABLE1
 
-
-            Select select2 = SelectUtils.buildSelectFromTableAndExpressions(new Table("TABLE1"), new Column("A"), new Column("B"));
-            System.out.println(select2.toString());//SELECT A, B FROM TABLE1
-
-            Select select3 = SelectUtils.buildSelectFromTableAndExpressions(new Table("TABLE1"), "a+b", "name");
-            System.out.println(select3.toString());//SELECT a + b, name FROM TABLE1
 
         } catch (JSQLParserException e) {
 
@@ -160,9 +154,31 @@ public class AppTest {
 
         }
 
+    }
 
+    /**
+     * test SelectUtils 快速建立select语句
+     * @throws Exception
+     */
+    @Test
+    public void testselectutils() throws Exception {
+        Select select1 = SelectUtils.buildSelectFromTable(new Table("TABLE1"));
+        System.out.println(select1.toString());//SELECT * FROM TABLE1
 
+        SelectExpressionItem item = new SelectExpressionItem(new Column("A"));
+        item.setAlias(new Alias("a"));
+        PlainSelect selectBody = (PlainSelect)select1.getSelectBody();
 
+        List<SelectItem> selectItems = new ArrayList<>();
+        selectItems.add(item);
+        selectBody.setSelectItems(selectItems);
+        System.out.println(select1.toString());
+
+        Select select2 = SelectUtils.buildSelectFromTableAndExpressions(new Table("TABLE1"), new Column("A"), new Column("B"));
+        System.out.println(select2.toString());//SELECT A, B FROM TABLE1
+
+        Select select3 = SelectUtils.buildSelectFromTableAndExpressions(new Table("TABLE1"), "a+b", "name");
+        System.out.println(select3.toString());//SELECT a + b, name FROM TABLE1
     }
 
 }

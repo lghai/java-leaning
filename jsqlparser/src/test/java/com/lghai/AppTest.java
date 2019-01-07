@@ -162,13 +162,16 @@ public class AppTest {
      */
     @Test
     public void testselectutils() throws Exception {
-        Select select1 = SelectUtils.buildSelectFromTable(new Table("TABLE1"));
+        Table tbl1 = new Table("TABLE1");
+        tbl1.setAlias(new Alias("T"));
+
+        Select select1 = SelectUtils.buildSelectFromTable(tbl1);
         System.out.println(select1.toString());//SELECT * FROM TABLE1
 
-        SelectExpressionItem item = new SelectExpressionItem(new Column("A"));
-        item.setAlias(new Alias("a"));
+        SelectExpressionItem item = new SelectExpressionItem(new Column(tbl1,"A"));
+        item.setAlias(new Alias("\"a\""));
         PlainSelect selectBody = (PlainSelect)select1.getSelectBody();
-
+        System.out.println("-------------");
         List<SelectItem> selectItems = new ArrayList<>();
         selectItems.add(item);
         selectBody.setSelectItems(selectItems);
@@ -180,5 +183,7 @@ public class AppTest {
         Select select3 = SelectUtils.buildSelectFromTableAndExpressions(new Table("TABLE1"), "a+b", "name");
         System.out.println(select3.toString());//SELECT a + b, name FROM TABLE1
     }
+
+
 
 }

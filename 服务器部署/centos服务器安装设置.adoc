@@ -48,7 +48,7 @@ endif::[]
 5. 启动mysql `service mysql start`
 6. 将mysql加到系统服务中并设置开机启动.加入到系统服务： `chkconfig --add mysql` .自动启动： `chkconfig mysql on`
 7. 查看 mysql的初始化密码 `head /root/.mysql_secret`
-8. 登入mysql `mysql –uroot -p密码`
+8. 登入mysql `mysql –u root -p密码`
 9. 修改mysql的密码 `set password = password('root');`
 10. 开启mysql的远程登录 `grant all privileges on *.* to 'root' @'%' identified by 'root';`  `flush privileges;`
 11. 开放Linux的对外访问的端口3306 `/sbin/iptables -I INPUT -p tcp --dport 3306 -j ACCEPT`
@@ -60,6 +60,8 @@ endif::[]
 image::centos服务器安装设置\centos-32sc3.jpg[]
 
 15.重启mysql `service mysql restart`
+16.碰到perl(Data::Dumper) 被 Percona-Server-server-56-5.6.27-rel76.0.el6.x86_64 需要先安装 `yum -y install autoconf`
+
 ====== temp
 
 ===== tomcat

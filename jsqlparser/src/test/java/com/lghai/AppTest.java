@@ -11,13 +11,19 @@ import net.sf.jsqlparser.expression.operators.relational.IsNullExpression;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.Table;
+import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.*;
 import net.sf.jsqlparser.util.SelectUtils;
+import net.sf.jsqlparser.util.TablesNamesFinder;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.junit.Assert.assertTrue;
 
@@ -66,7 +72,7 @@ public class AppTest {
      */
     @Test
     public void testAddCondition() throws Exception {
-        Select select = (Select) CCJSqlParserUtil.parse("select name from user where id = 1000");
+        Select select = (Select) CCJSqlParserUtil.parse("select name from user where id = 1000;\r\n-- shilie");
         PlainSelect plainSelect = (PlainSelect) select.getSelectBody();
 
         // 原where表达式
@@ -111,8 +117,8 @@ public class AppTest {
     @Test
     public void testParseJoin() throws Exception {
 
-        String sql = "select *from A as a left join B on a.bid = B.id left join C on A.cid = C.id left join D on B.did = D.id";
-
+        String sql = "select distinct *from A as a left join B on a.bid = B.id left join C on A.cid = C.id left join D on B.did = D.id";
+        System.out.println(new SQLFormatter().format(sql));
         try {
 
             Select select = (Select) CCJSqlParserUtil.parse(sql);
@@ -184,6 +190,90 @@ public class AppTest {
         System.out.println(select3.toString());//SELECT a + b, name FROM TABLE1
     }
 
+    // 获取sql语句中的所有表名
+    // 可以获取任意类型sql语句的全部表名，这里使用的select sql
+    // **********传入String 得到List<String>,嵌套已测试
+    public static List<String> test_select_table(String sql)
+            throws JSQLParserException {
+        Statement statement = (Statement) CCJSqlParserUtil.parse(sql);
+        Select selectStatement = (Select) statement;
+        TablesNamesFinder tablesNamesFinder = new TablesNamesFinder();
+        List<String> tableList = tablesNamesFinder
+                .getTableList(selectStatement);
+        return tableList;
+    }
 
+    // 验证sql语法正确性，返回错误信息
+    // 传入 String sql
+    // ***********返回错误信息such as： “错误单词” “line 1” “column 80”
+    public static String judge_type(String sql) {
+
+        try {
+            Statement statement = (Statement) CCJSqlParserUtil.parse(sql);
+        } catch (JSQLParserException e) {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            e.printStackTrace(new PrintStream(baos));
+            String exception = baos.toString();
+            String regEx = "Encountered(.*)";
+            Pattern pat = Pattern.compile(regEx);
+            Matcher mat = pat.matcher(exception);
+            while (mat.find()) {
+                exception = mat.group(1);
+            }
+            // System.out.println(exception);
+            String line = "";
+            String regEx2 = "line (.*),";
+            pat = Pattern.compile(regEx2);
+            mat = pat.matcher(exception);
+            while (mat.find()) {
+                line = mat.group(1);
+            }
+            // System.out.println(line);
+
+            int line_num = Integer.valueOf(line).intValue();
+            int indexofcolumn = exception.indexOf("column");
+            String errornumber = exception.substring(indexofcolumn + 7,
+                    exception.length() - 1);
+            int error_num = Integer.valueOf(errornumber).intValue();
+            System.out.println(error_num);
+
+            String ERROR_location = "";
+            if (error_num != 1) {
+                String sql_sub = sql.substring(0, error_num - 2); // 发生错误位置前面的字符串
+                // 错误信息单词往往处于错误位置的前一个地方单词
+                // 获取错误位置两个前面两个空格之间的单词，并保存
+                sql_sub = new StringBuilder(sql_sub).reverse().toString();
+                int indexofspace = sql_sub.indexOf(" ");
+                String sql_error = sql_sub.substring(0, indexofspace);
+                sql_error = new StringBuilder(sql_error).reverse().toString();
+                ERROR_location = "\"" + sql_error + "\"" + " at line "
+                        + line_num + " at column " + error_num;
+            } else {
+                int indexofspace = sql.indexOf(" ");
+                String sql_error = sql.substring(0, indexofspace);
+                ERROR_location = "\"" + sql_error + "\"" + " at line "
+                        + line_num + " at column " + error_num;
+            }
+            return ERROR_location; // 错误信息的返回
+        }
+        String result = "correct";
+        return result; // Jsql可以解析，返回correct
+    }
+
+    /**
+     * test SelectUtils 快速建立select语句
+     * @throws Exception
+     */
+    @Test
+    public void testcheck() throws Exception {
+        String sql ="select * from dual a where a='1' ;\n insert into a values('1',)";
+        System.out.println(sql);
+        try {
+            CCJSqlParserUtil.parseStatements(sql);
+        } catch (JSQLParserException e) {
+            System.out.println(e.getCause());
+        }
+        System.out.println(judge_type(sql));
+    }
 
 }

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Navimice 2.0</title>
+	<link rel="stylesheet" href="css/style.css">
+	<link href="plug/bootstrap.min.css" rel="stylesheet" type="text/css"></link>
+</head>
+<body>
+	<div id="config">
+		<form class="form-inline">
+			<div class="form-group">
+				<div class="input-group">
+					<div class="input-group-addon" style="background-color: #DDF;">剪掉部分正则</div>
+					<input type="text" id="cutoff" value="(\d{4}-\d{2}-\d{2}.+\:\s)|(\n?\d{4}-\d{2}-\d{2}.+)" style="width:360px;">
+					<div class="checkbox">
+						<label></label><input type="checkbox" id="cutoffI" value="i" checked> i</label>
+						<input type="checkbox" id="cutoffG" value="g" checked>
+						<label>g</label>
+					</div>
+				</div>
+			</div>&emsp;
+			<div class="form-group">
+				<div class="input-group">
+					<div class="input-group-addon" style="background-color: #FFA;">替换参数正则</div>
+					<input type="text" id="replaceArg" value="([^\s]+)(\(String\))" style="width:280px;">
+					<input type="text" id="replaceArg2" value="'$1'" style="width:60px;" placeholder="匹配子项($1,$2,...)" title="匹配子项($1,$2,...)">
+				</div>
+			</div>&emsp;
+			<div class="form-group">
+				<div class="input-group">
+					<div class="input-group-addon" style="background-color: #FF0;">被替换参数正则</div>
+					<input type="text" id="beReplaceArg" value="\?" style="width:360px;">
+				</div>
+			</div>
+		</form>
+	</div>
+	<div id="main">
+		<div id="leftWarp" style="resize:none;">
+			<textarea class="text-mirror" id="leftInput" style="width:100%;">
+2017-03-08 09:57 DEBUG b.getDyHgzPageList - ==>  Preparing: SELECT bm.id AS "bb_id", (SELECT dictionary_name FROM sys_dictionary WHERE dictionary_code = bm.mz AND parent_dictionary_id = ( SELECT dictionary_id FROM sys_dictionary WHERE dictionary_no = ? ) ) As "bb_mz" FROM bm_bmb bm left join ks_cjb cjb on bm.bmh = cjb.bmh_id left join ks_zcjb zcjb on bm.bmh = zcjb.bmh_Id WHERE 1=1 and zcjb.sftg = '1' and zcjb.sffb = '1' and bm.user_id like ? ORDER BY bb_xm desc LIMIT 0,30 
+2017-03-08 09:57 DEBUG b.getDyHgzPageList - ==> Parameters: mz_zd(String), 59e58da4-da29-11e6-9689-50af7326854d(String)
+2017-03-08 09:57 DEBUG b.getDyHgzPageList - <==      Total: 5
+			</textarea>
+			<pre class="hid-inputview text-mirror"></pre>
+
+		</div>
+		&nbsp;
+		<div class="" id="right">
+			<ul class="nav nav-tabs" role="tablist" id="outTab">
+				<!-- <li role="presentation">
+					<a href="#outTab1" aria-controls="tab1" id="" data-toggle="tab">正则预览</a>
+				</li> -->
+				<li role="presentation" class="active">
+					<a href="#outTab2" aria-controls="tab2" id="" data-toggle="tab">处理结果</a>
+				</li>
+				<li role="presentation">
+					<a href="#outTab3" aria-controls="tab3" id="" data-toggle="tab">...</a>
+				</li>
+			</ul>
+			<div class="tab-content">
+				<!-- <div role="tabpanel" class="tab-pane" id="outTab1">
+					<p class="content"></p>
+				</div> -->
+				<div role="tabpanel" class="tab-pane active" id="outTab2">
+					<pre class="content" id="outputArea"></pre>
+					<button id="btn_copy">复制结果</button>
+					<textarea id="outputArea_hide" cols="0" rows="0" style="width:0;height:0;left: -20px;position: relative;z-index:-100;"></textarea>
+				</div>
+				<div role="tabpanel" class="tab-pane" id="outTab3">
+					<p class="content"><span class="text-info">没有了呦~ ┑(￣Д ￣)┍</span></p>
+				</div>
+			</div>
+		</div>
+		<a href="https://github.com/fengxxc/debugHelper" target="_blank"><img style="position: absolute; top: 0; right: 0; border: 0; transform: scale(.7); transform-origin: top right; z-index: 2;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+		
+	</div>
+
+<script src="plug/jquery-1.11.1.min.js"></script>
+<script src="plug/bootstrap.min.js"></script>
+<script src="js/SqlUtils2.js"></script>
+<script src="js/regExpUtils.js"></script>
+<script>
+	let Config = {};
+	const pageReSize = () => {
+		const width = $('body').width()
+		const w = (width-50)/2
+		$('#leftWarp').css('width', w)
+		$('#right').css('width', w)
+	}
+	const loadConfig = () => {
+		Config = {
+			cutoff: $('#cutoff').val() || '',
+			cutoffI: $('#cutoffI').val() || '',
+			cutoffG: $('#cutoffG').val() || '',
+
+			replaceArg: $('#replaceArg').val() || '',
+			replaceArg2: $('#replaceArg2').val() || '',
+			beReplaceArg: $('#beReplaceArg').val() || '',
+		}
+	}
+	const pageInit = () => {
+		// view
+		pageReSize()
+
+		// config
+		loadConfig()
+		
+		$('#leftInput').trigger('input')
+	}
+	
+
+	$('#leftInput,#cutoff,#cutoffI,#cutoffG,#replaceArg,#replaceArg2,#beReplaceArg').on('input', (e) => {
+		loadConfig()
+		const oText = $('#leftInput').val()
+		const cutoffReg = new RegExp(Config.cutoff, Config.cutoffI+Config.cutoffG)
+		const replaceArgReg = new RegExp(Config.replaceArg, 'g')
+		const beReplaceArgReg = new RegExp(Config.beReplaceArg, 'g')
+		
+		// tab1
+		// $('#outTab1 .content').html(dHtml)
+		let matchHtml = RegExpUtils.getMatchWarpHtml(cutoffReg, oText, '<span class="cutoff">', '</span>').join('')
+		matchHtml = RegExpUtils.getMatchWarpHtml(replaceArgReg, matchHtml, '<span class="replacefrom">', '</span>').join('')
+		matchHtml = RegExpUtils.getMatchWarpHtml(beReplaceArgReg, matchHtml, '<span class="replaceto">', '</span>').join('')
+		$('.hid-inputview').html(matchHtml)
+
+		
+		// tab2
+		let replText = []
+		let ra2 = Config.replaceArg2 || '$&'
+		$('.hid-inputview').find('.replacefrom').each((i, e) => replText.push(e.innerText.replace(replaceArgReg, ra2)))
+		let dText = oText.replace(cutoffReg, '')
+		for (let i = 0; i < replText.length; i++) {
+			dText = dText.replace(new RegExp(Config.beReplaceArg), `<span class="replaceto">${replText[i]}</span>`)
+		}
+		const sm = SqlModUtil.parse(dText)
+		const smf = sm.formatHTML()
+		$('#outTab2 .content').html(smf)
+	})
+
+	const outputArea_hide = document.getElementById('outputArea_hide');
+	const outputArea = document.getElementById('outputArea');
+	// copy到剪贴板
+	function copySql() {
+		if (outputArea.innerText == '') {
+			alert("啥也没有你让我复制个P丫 o(ﾟДﾟ)っ！"); 
+			return;
+		}
+		try {
+			outputArea_hide.value = outputArea.innerText;
+			outputArea_hide.select();
+			document.execCommand("copy",false,null);
+			alert("已复制到剪贴板 Ψ(￣∀￣)Ψ")
+		} catch(err) {
+			alert("copy到剪贴板失败，你的牛腩器好像不滋泚哦 ┓(;´_｀)┏")
+		}
+	}
+	$('#btn_copy').on('click', function () {
+		copySql()
+	})
+	pageInit()
+// -------------------------------------------------------------------------------------------------
+	
+	
+</script>
+</body>
+</html>
+<!-- 
+2017-03-08 09:57 DEBUG b.getDyHgzPageList - ==>  Preparing: SELECT bm.id AS "bb_id", bm.user_id AS "bb_userId", bm.xm AS "bb_xm", bm.xb AS "bb_xb", (SELECT dictionary_name FROM sys_dictionary WHERE dictionary_code = bm.mz AND parent_dictionary_id = ( SELECT dictionary_id FROM sys_dictionary WHERE dictionary_no = ? ) ) As "bb_mz", bm.zjlx AS "bb_zjlx", bm.zjhm AS "bb_zjhm", bm.bmh AS "bb_bmh", bm.lsh AS "bb_lsh", bm.xydm AS "bb_xydm", bm.xymc AS "bb_xymc", bm.nfdm AS "bb_nfdm", bm.kddm AS "bb_kddm", bm.kdmc AS "bb_kdmc", bm.zydm AS "bb_zydm", bm.zymc AS "bb_zymc", bm.bmxh AS "bb_bmxh", bm.cym AS "bb_cym", bm.kl AS "bb_kl", bm.whcd AS "bb_whcd", bm.gkszd AS "bb_gkszd", bm.gkksh AS "bb_gkksh", bm.byxx AS "bb_byxx", bm.sj AS "bb_sj", bm.fqxm AS "bb_fqxm", bm.fqdw AS "bb_fqdw", bm.fqdh AS "bb_fqdh", bm.mqxm AS "bb_mqxm", bm.mqdw AS "bb_mqdw", bm.mqdh AS "bb_mqdh", bm.sjr AS "bb_sjr", bm.sjrdh AS "bb_sjrdh", bm.jtzz AS "bb_jtzz", bm.yb AS "bb_yb", bm.zp1 AS "bb_zp1", bm.zp2 AS "bb_zp2", bm.zp3 AS "bb_zp3", bm.yyqz AS "bb_yyqz", bm.ysqm AS "bb_ysqm", bm.sg AS "bb_sg", bm.tz AS "bb_tz", bm.csrq AS "bb_csrq", bm.gkgf AS "bb_gkgf", bm.wz AS "bb_wz", bm.ydydj AS "bb_ydydj", bm.qq AS "bb_qq", bm.ydycj AS "bb_ydycj", bm.qtydcj AS "bb_qtydcj", bm.jfzt AS "bb_jfzt", bm.shzt AS "bb_shzt", bm.shsj AS "bb_shsj", bm.shr AS "bb_shr", bm.shyj AS "bb_shyj", bm.jbxxshzt AS "bb_jbxxshzt", bm.jbxxshsj AS "bb_jbxxshsj", bm.jbxxshr AS "bb_jbxxshr", bm.jbxxshyj AS "bb_jbxxshyj", cjb.id AS "kc_id", cjb.bmh_id AS "kc_bmhId", cjb.sxh AS "kc_sxh", cjb.kslc AS "kc_kslc", cjb.kskm AS "kc_kskm", cjb.kscj AS "kc_kscj", cjb.sftg AS "kc_sftg", cjb.ksrq AS "kc_ksrq", cjb.kssj AS "kc_kssj", cjb.ksdd AS "kc_ksdd", cjb.lrr AS "kc_lrr", cjb.lrsj AS "kc_lrsj", zcjb.zcj AS "kz_zcj", zcjb.id AS "zcj_id", zcjb.bmh_id AS "kz_bmh_id", zcjb.sxh AS "kz_sxh", zcjb.xzh AS "kz_xzh", zcjb.xydm AS "kz_xydm", zcjb.nfdm AS "kz_nfdm", zcjb.zydm AS "kz_zydm", zcjb.kslc AS "kz_kslc", zcjb.zcj AS "kz_zcj", zcjb.sftg AS "kz_sftg", zcjb.sffb AS "kz_sffb", zcjb.sfdr AS "kz_sfdr" FROM bm_bmb bm left join ks_cjb cjb on bm.bmh = cjb.bmh_id left join ks_zcjb zcjb on bm.bmh = zcjb.bmh_Id WHERE 1=1 and zcjb.sftg = '1' and zcjb.sffb = '1' and bm.user_id like ? ORDER BY bb_xm desc LIMIT 0,30 
+2017-03-08 09:57 DEBUG b.getDyHgzPageList - ==> Parameters: mz_zd(String), 59e58da4-da29-11e6-9689-50af7326854d(String)
+2017-03-08 09:57 DEBUG b.getDyHgzPageList - <==      Total: 5
+ -->

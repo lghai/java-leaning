@@ -94,7 +94,7 @@ public class AppTest {
      */
     @Test
     public void testNullCondition() throws Exception {
-        Select select = (Select) CCJSqlParserUtil.parse("select name from user where id = 1000");
+        Select select = (Select) CCJSqlParserUtil.parse("select name, array['刚刚'] from user where id = 1000");
         PlainSelect plainSelect = (PlainSelect) select.getSelectBody();
 
         // 原where表达式
